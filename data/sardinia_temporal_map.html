@@ -1,0 +1,3037 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_6055fb40374a094253cd387be7564417 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-dvf/0.3.0/leaflet-dvf.markers.min.js"></script>
+</head>
+<body>
+    
+    
+<div style="position:fixed;bottom:40px;left:40px;z-index:1000;background:white;
+     padding:14px 18px;border-radius:8px;box-shadow:2px 2px 8px rgba(0,0,0,0.2);
+     font-family:Arial,sans-serif;font-size:12px;min-width:220px">
+  <b style="font-size:14px">Marine Litter — Temporal Map</b><br>
+  <small style="color:#888">Sardinia · ISPRA MSFD D10</small>
+  <hr style="margin:8px 0;border-color:#eee">
+  <b>🏖️ Beach (items/100m)</b><br>
+  <span style="color:#27ae60;font-size:15px">●</span> &lt;100 &nbsp;
+  <span style="color:#f39c12;font-size:15px">●</span> 100–300<br>
+  <span style="color:#e74c3c;font-size:15px">●</span> 300–600 &nbsp;
+  <span style="color:#8e44ad;font-size:15px">●</span> &gt;600<br>
+  <small style="color:#888">Circle size ∝ density</small>
+  <br><br>
+  <b>🌊 Floating</b> <span style="color:#2980b9">▲</span><br>
+  <small style="color:#888">Triangle size ∝ n° observations</small>
+  <br><br>
+  <small style="color:#555">Toggle years in layer panel →</small>
+</div>
+    
+            <div class="folium-map" id="map_6055fb40374a094253cd387be7564417" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_6055fb40374a094253cd387be7564417 = L.map(
+                "map_6055fb40374a094253cd387be7564417",
+                {
+                    center: [40.1, 9.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 7,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_b1bdaae53cec5e88289633b7904a66e9 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_b1bdaae53cec5e88289633b7904a66e9.addTo(map_6055fb40374a094253cd387be7564417);
+        
+    
+            var feature_group_ec52666e3344ceac858f39a14667dfff = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_a0cb09c7805133878f4ea7e082a5cc72 = L.circleMarker(
+                [40.58593, 8.30683],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e74c3c", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.766666666666666, "stroke": true, "weight": 2}
+            ).addTo(feature_group_ec52666e3344ceac858f39a14667dfff);
+        
+    
+        var popup_55b1080e0b828167d8c6d8575814c385 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_800b94499f27d6df274e2be2cf1d4a5b = $(`<div id="html_800b94499f27d6df274e2be2cf1d4a5b" style="width: 100.0%; height: 100.0%;"><b>Alghero Lido</b><br>Year: <b>2020</b><br>items/100m: <b style='color:#e74c3c'>526.0</b></div>`)[0];
+                popup_55b1080e0b828167d8c6d8575814c385.setContent(html_800b94499f27d6df274e2be2cf1d4a5b);
+            
+        
+
+        circle_marker_a0cb09c7805133878f4ea7e082a5cc72.bindPopup(popup_55b1080e0b828167d8c6d8575814c385)
+        ;
+
+        
+    
+    
+            circle_marker_a0cb09c7805133878f4ea7e082a5cc72.bindTooltip(
+                `<div>
+                     🏖️ Alghero Lido 2020: 526 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_88998314101c19563f37a99b7f2ef204 = L.circleMarker(
+                [39.2125, 9.17472],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.283333333333333, "stroke": true, "weight": 2}
+            ).addTo(feature_group_ec52666e3344ceac858f39a14667dfff);
+        
+    
+        var popup_c1bd098f17ebf28a7ba683a3631c4484 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_2282d54f92bc3b6886a12d50a8049064 = $(`<div id="html_2282d54f92bc3b6886a12d50a8049064" style="width: 100.0%; height: 100.0%;"><b>Cagliari Poetto</b><br>Year: <b>2020</b><br>items/100m: <b style='color:#f39c12'>257.0</b></div>`)[0];
+                popup_c1bd098f17ebf28a7ba683a3631c4484.setContent(html_2282d54f92bc3b6886a12d50a8049064);
+            
+        
+
+        circle_marker_88998314101c19563f37a99b7f2ef204.bindPopup(popup_c1bd098f17ebf28a7ba683a3631c4484)
+        ;
+
+        
+    
+    
+            circle_marker_88998314101c19563f37a99b7f2ef204.bindTooltip(
+                `<div>
+                     🏖️ Cagliari Poetto 2020: 257 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9fc9e083012b877f3856ea03439b91e9 = L.circleMarker(
+                [39.26416, 9.58138],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#27ae60", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.6, "stroke": true, "weight": 2}
+            ).addTo(feature_group_ec52666e3344ceac858f39a14667dfff);
+        
+    
+        var popup_f7e88e52fc530058ac952105ecca07fc = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_419ec3e87258a85b13440f3addc43745 = $(`<div id="html_419ec3e87258a85b13440f3addc43745" style="width: 100.0%; height: 100.0%;"><b>Castiadas Costa Rei</b><br>Year: <b>2020</b><br>items/100m: <b style='color:#27ae60'>96.0</b></div>`)[0];
+                popup_f7e88e52fc530058ac952105ecca07fc.setContent(html_419ec3e87258a85b13440f3addc43745);
+            
+        
+
+        circle_marker_9fc9e083012b877f3856ea03439b91e9.bindPopup(popup_f7e88e52fc530058ac952105ecca07fc)
+        ;
+
+        
+    
+    
+            circle_marker_9fc9e083012b877f3856ea03439b91e9.bindTooltip(
+                `<div>
+                     🏖️ Castiadas Costa Rei 2020: 96 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c773c12de34c49a37de84bcc60d24419 = L.circleMarker(
+                [40.06952, 8.47871],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#8e44ad", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 18.59166666666667, "stroke": true, "weight": 2}
+            ).addTo(feature_group_ec52666e3344ceac858f39a14667dfff);
+        
+    
+        var popup_68668b75dc30a639befa0a9b4320b306 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_f3407eb06351306d209516da377b49f5 = $(`<div id="html_f3407eb06351306d209516da377b49f5" style="width: 100.0%; height: 100.0%;"><b>Oristano Is Arenas</b><br>Year: <b>2020</b><br>items/100m: <b style='color:#8e44ad'>635.5</b></div>`)[0];
+                popup_68668b75dc30a639befa0a9b4320b306.setContent(html_f3407eb06351306d209516da377b49f5);
+            
+        
+
+        circle_marker_c773c12de34c49a37de84bcc60d24419.bindPopup(popup_68668b75dc30a639befa0a9b4320b306)
+        ;
+
+        
+    
+    
+            circle_marker_c773c12de34c49a37de84bcc60d24419.bindTooltip(
+                `<div>
+                     🏖️ Oristano Is Arenas 2020: 636 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_dc77ede5a113dfd1dbf7bc34f2c333ed = L.circleMarker(
+                [40.788277, 9.670278],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#27ae60", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.6, "stroke": true, "weight": 2}
+            ).addTo(feature_group_ec52666e3344ceac858f39a14667dfff);
+        
+    
+        var popup_014c868b815f6caed1f7c37204af504f = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_930e1f394269947f773f299ea6ddfc15 = $(`<div id="html_930e1f394269947f773f299ea6ddfc15" style="width: 100.0%; height: 100.0%;"><b>San Teodoro La Cinta</b><br>Year: <b>2020</b><br>items/100m: <b style='color:#27ae60'>36.0</b></div>`)[0];
+                popup_014c868b815f6caed1f7c37204af504f.setContent(html_930e1f394269947f773f299ea6ddfc15);
+            
+        
+
+        circle_marker_dc77ede5a113dfd1dbf7bc34f2c333ed.bindPopup(popup_014c868b815f6caed1f7c37204af504f)
+        ;
+
+        
+    
+    
+            circle_marker_dc77ede5a113dfd1dbf7bc34f2c333ed.bindTooltip(
+                `<div>
+                     🏖️ San Teodoro La Cinta 2020: 36 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3bd191084b591432ee53b735f5bd5aa4 = L.circleMarker(
+                [38.95879, 8.61167],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#27ae60", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.083333333333334, "stroke": true, "weight": 2}
+            ).addTo(feature_group_ec52666e3344ceac858f39a14667dfff);
+        
+    
+        var popup_b9c341e1c2834429d090a82a2fafbc96 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_f23b8d50bb7563072fc8eb429ce550a2 = $(`<div id="html_f23b8d50bb7563072fc8eb429ce550a2" style="width: 100.0%; height: 100.0%;"><b>S.A. Arresi Porto Pino</b><br>Year: <b>2020</b><br>items/100m: <b style='color:#27ae60'>65.0</b></div>`)[0];
+                popup_b9c341e1c2834429d090a82a2fafbc96.setContent(html_f23b8d50bb7563072fc8eb429ce550a2);
+            
+        
+
+        circle_marker_3bd191084b591432ee53b735f5bd5aa4.bindPopup(popup_b9c341e1c2834429d090a82a2fafbc96)
+        ;
+
+        
+    
+    
+            circle_marker_3bd191084b591432ee53b735f5bd5aa4.bindTooltip(
+                `<div>
+                     🏖️ S.A. Arresi Porto Pino 2020: 65 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var feature_group_eec0c9678f73a010e258a834fcd5df5b = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_c03856ed6c74db44eab827104417473f = L.circleMarker(
+                [40.58593, 8.30683],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#8e44ad", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.45, "stroke": true, "weight": 2}
+            ).addTo(feature_group_eec0c9678f73a010e258a834fcd5df5b);
+        
+    
+        var popup_149943e3259840120b3adc63979d3b9b = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_d1a8b09024fece96c41bc8c39098dfcb = $(`<div id="html_d1a8b09024fece96c41bc8c39098dfcb" style="width: 100.0%; height: 100.0%;"><b>Alghero Lido</b><br>Year: <b>2021</b><br>items/100m: <b style='color:#8e44ad'>687.0</b></div>`)[0];
+                popup_149943e3259840120b3adc63979d3b9b.setContent(html_d1a8b09024fece96c41bc8c39098dfcb);
+            
+        
+
+        circle_marker_c03856ed6c74db44eab827104417473f.bindPopup(popup_149943e3259840120b3adc63979d3b9b)
+        ;
+
+        
+    
+    
+            circle_marker_c03856ed6c74db44eab827104417473f.bindTooltip(
+                `<div>
+                     🏖️ Alghero Lido 2021: 687 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_dedff72de87125a01c968e774a7c4418 = L.circleMarker(
+                [39.2125, 9.17472],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.05, "stroke": true, "weight": 2}
+            ).addTo(feature_group_eec0c9678f73a010e258a834fcd5df5b);
+        
+    
+        var popup_b0f8dacf97dab6433067894638c889d0 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_de9562a5128e4b6b8563f6d66e35274f = $(`<div id="html_de9562a5128e4b6b8563f6d66e35274f" style="width: 100.0%; height: 100.0%;"><b>Cagliari Poetto</b><br>Year: <b>2021</b><br>items/100m: <b style='color:#f39c12'>183.0</b></div>`)[0];
+                popup_b0f8dacf97dab6433067894638c889d0.setContent(html_de9562a5128e4b6b8563f6d66e35274f);
+            
+        
+
+        circle_marker_dedff72de87125a01c968e774a7c4418.bindPopup(popup_b0f8dacf97dab6433067894638c889d0)
+        ;
+
+        
+    
+    
+            circle_marker_dedff72de87125a01c968e774a7c4418.bindTooltip(
+                `<div>
+                     🏖️ Cagliari Poetto 2021: 183 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e9cfa61d7e4a9e0b750b44fbdef85cc1 = L.circleMarker(
+                [39.26416, 9.58138],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.925, "stroke": true, "weight": 2}
+            ).addTo(feature_group_eec0c9678f73a010e258a834fcd5df5b);
+        
+    
+        var popup_c8a1d98d81e4cc6513e1f10f283bdc7d = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b9ef29efa07730cf52ca25378d958499 = $(`<div id="html_b9ef29efa07730cf52ca25378d958499" style="width: 100.0%; height: 100.0%;"><b>Castiadas Costa Rei</b><br>Year: <b>2021</b><br>items/100m: <b style='color:#f39c12'>295.5</b></div>`)[0];
+                popup_c8a1d98d81e4cc6513e1f10f283bdc7d.setContent(html_b9ef29efa07730cf52ca25378d958499);
+            
+        
+
+        circle_marker_e9cfa61d7e4a9e0b750b44fbdef85cc1.bindPopup(popup_c8a1d98d81e4cc6513e1f10f283bdc7d)
+        ;
+
+        
+    
+    
+            circle_marker_e9cfa61d7e4a9e0b750b44fbdef85cc1.bindTooltip(
+                `<div>
+                     🏖️ Castiadas Costa Rei 2021: 296 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5434a03e1f94d66c9ae6e1ce7f09e73c = L.circleMarker(
+                [40.06952, 8.47871],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#8e44ad", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20.233333333333334, "stroke": true, "weight": 2}
+            ).addTo(feature_group_eec0c9678f73a010e258a834fcd5df5b);
+        
+    
+        var popup_ac0f152c9d3ddf11a9b561fbe325046d = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_ad6a79802b8fd129d6e3137a9b74b72f = $(`<div id="html_ad6a79802b8fd129d6e3137a9b74b72f" style="width: 100.0%; height: 100.0%;"><b>Oristano Is Arenas</b><br>Year: <b>2021</b><br>items/100m: <b style='color:#8e44ad'>734.0</b></div>`)[0];
+                popup_ac0f152c9d3ddf11a9b561fbe325046d.setContent(html_ad6a79802b8fd129d6e3137a9b74b72f);
+            
+        
+
+        circle_marker_5434a03e1f94d66c9ae6e1ce7f09e73c.bindPopup(popup_ac0f152c9d3ddf11a9b561fbe325046d)
+        ;
+
+        
+    
+    
+            circle_marker_5434a03e1f94d66c9ae6e1ce7f09e73c.bindTooltip(
+                `<div>
+                     🏖️ Oristano Is Arenas 2021: 734 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_19178771bb732e1fabca6472b05176a3 = L.circleMarker(
+                [40.788277, 9.670278],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#27ae60", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8.466666666666667, "stroke": true, "weight": 2}
+            ).addTo(feature_group_eec0c9678f73a010e258a834fcd5df5b);
+        
+    
+        var popup_4854c5368df0d30262b0a0bd2734690e = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_e5bd45eb17d48973a34bf3715b485035 = $(`<div id="html_e5bd45eb17d48973a34bf3715b485035" style="width: 100.0%; height: 100.0%;"><b>San Teodoro La Cinta</b><br>Year: <b>2021</b><br>items/100m: <b style='color:#27ae60'>28.0</b></div>`)[0];
+                popup_4854c5368df0d30262b0a0bd2734690e.setContent(html_e5bd45eb17d48973a34bf3715b485035);
+            
+        
+
+        circle_marker_19178771bb732e1fabca6472b05176a3.bindPopup(popup_4854c5368df0d30262b0a0bd2734690e)
+        ;
+
+        
+    
+    
+            circle_marker_19178771bb732e1fabca6472b05176a3.bindTooltip(
+                `<div>
+                     🏖️ San Teodoro La Cinta 2021: 28 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_22f456b383330ad1848ea62a63f9f2d4 = L.circleMarker(
+                [38.95879, 8.61167],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.116666666666667, "stroke": true, "weight": 2}
+            ).addTo(feature_group_eec0c9678f73a010e258a834fcd5df5b);
+        
+    
+        var popup_36d18f82e03f31c47d851a2c0b6867d8 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_a7ad71576d4e51eccc144cc120aedefd = $(`<div id="html_a7ad71576d4e51eccc144cc120aedefd" style="width: 100.0%; height: 100.0%;"><b>S.A. Arresi Porto Pino</b><br>Year: <b>2021</b><br>items/100m: <b style='color:#f39c12'>187.0</b></div>`)[0];
+                popup_36d18f82e03f31c47d851a2c0b6867d8.setContent(html_a7ad71576d4e51eccc144cc120aedefd);
+            
+        
+
+        circle_marker_22f456b383330ad1848ea62a63f9f2d4.bindPopup(popup_36d18f82e03f31c47d851a2c0b6867d8)
+        ;
+
+        
+    
+    
+            circle_marker_22f456b383330ad1848ea62a63f9f2d4.bindTooltip(
+                `<div>
+                     🏖️ S.A. Arresi Porto Pino 2021: 187 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var feature_group_b984fa20c7e1fb0a6e07c530497b003a = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_68af350abf7c629606cd4372a7c56f12 = L.circleMarker(
+                [40.58593, 8.30683],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e74c3c", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.841666666666667, "stroke": true, "weight": 2}
+            ).addTo(feature_group_b984fa20c7e1fb0a6e07c530497b003a);
+        
+    
+        var popup_5b363f169b66ae7fd1d4dc256c8ab5b0 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_ac547ca7c7b3978179de5b0ec44a496b = $(`<div id="html_ac547ca7c7b3978179de5b0ec44a496b" style="width: 100.0%; height: 100.0%;"><b>Alghero Lido</b><br>Year: <b>2022</b><br>items/100m: <b style='color:#e74c3c'>470.5</b></div>`)[0];
+                popup_5b363f169b66ae7fd1d4dc256c8ab5b0.setContent(html_ac547ca7c7b3978179de5b0ec44a496b);
+            
+        
+
+        circle_marker_68af350abf7c629606cd4372a7c56f12.bindPopup(popup_5b363f169b66ae7fd1d4dc256c8ab5b0)
+        ;
+
+        
+    
+    
+            circle_marker_68af350abf7c629606cd4372a7c56f12.bindTooltip(
+                `<div>
+                     🏖️ Alghero Lido 2022: 470 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e283b4bde3de599f48b7d0fcc8e4b162 = L.circleMarker(
+                [39.2125, 9.17472],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e74c3c", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.258333333333333, "stroke": true, "weight": 2}
+            ).addTo(feature_group_b984fa20c7e1fb0a6e07c530497b003a);
+        
+    
+        var popup_7ecd3cbe43a80233e2e85ab31d5738c9 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_6e09cd4373165431f8d1a53e66cae453 = $(`<div id="html_6e09cd4373165431f8d1a53e66cae453" style="width: 100.0%; height: 100.0%;"><b>Cagliari Poetto</b><br>Year: <b>2022</b><br>items/100m: <b style='color:#e74c3c'>315.5</b></div>`)[0];
+                popup_7ecd3cbe43a80233e2e85ab31d5738c9.setContent(html_6e09cd4373165431f8d1a53e66cae453);
+            
+        
+
+        circle_marker_e283b4bde3de599f48b7d0fcc8e4b162.bindPopup(popup_7ecd3cbe43a80233e2e85ab31d5738c9)
+        ;
+
+        
+    
+    
+            circle_marker_e283b4bde3de599f48b7d0fcc8e4b162.bindTooltip(
+                `<div>
+                     🏖️ Cagliari Poetto 2022: 316 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1f3c2b1e03f257071679785a92a4e079 = L.circleMarker(
+                [39.26416, 9.58138],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.475, "stroke": true, "weight": 2}
+            ).addTo(feature_group_b984fa20c7e1fb0a6e07c530497b003a);
+        
+    
+        var popup_403c60398e5cf98b30efc8917edb7dd5 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_86b324f1cbc1d735d59cd2eeb78ca00c = $(`<div id="html_86b324f1cbc1d735d59cd2eeb78ca00c" style="width: 100.0%; height: 100.0%;"><b>Castiadas Costa Rei</b><br>Year: <b>2022</b><br>items/100m: <b style='color:#f39c12'>148.5</b></div>`)[0];
+                popup_403c60398e5cf98b30efc8917edb7dd5.setContent(html_86b324f1cbc1d735d59cd2eeb78ca00c);
+            
+        
+
+        circle_marker_1f3c2b1e03f257071679785a92a4e079.bindPopup(popup_403c60398e5cf98b30efc8917edb7dd5)
+        ;
+
+        
+    
+    
+            circle_marker_1f3c2b1e03f257071679785a92a4e079.bindTooltip(
+                `<div>
+                     🏖️ Castiadas Costa Rei 2022: 148 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0331cc27aef0fd6f729d8f435e82e067 = L.circleMarker(
+                [40.06952, 8.47871],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e74c3c", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.558333333333334, "stroke": true, "weight": 2}
+            ).addTo(feature_group_b984fa20c7e1fb0a6e07c530497b003a);
+        
+    
+        var popup_4fdfcf473b87448fc53cafc83f5b8344 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_f21f43c0ff8e2ecbba0700ccfab544a7 = $(`<div id="html_f21f43c0ff8e2ecbba0700ccfab544a7" style="width: 100.0%; height: 100.0%;"><b>Oristano Is Arenas</b><br>Year: <b>2022</b><br>items/100m: <b style='color:#e74c3c'>393.5</b></div>`)[0];
+                popup_4fdfcf473b87448fc53cafc83f5b8344.setContent(html_f21f43c0ff8e2ecbba0700ccfab544a7);
+            
+        
+
+        circle_marker_0331cc27aef0fd6f729d8f435e82e067.bindPopup(popup_4fdfcf473b87448fc53cafc83f5b8344)
+        ;
+
+        
+    
+    
+            circle_marker_0331cc27aef0fd6f729d8f435e82e067.bindTooltip(
+                `<div>
+                     🏖️ Oristano Is Arenas 2022: 394 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6cabbf1c4c745252e68a705193e7ed00 = L.circleMarker(
+                [40.788277, 9.670278],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#27ae60", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.441666666666666, "stroke": true, "weight": 2}
+            ).addTo(feature_group_b984fa20c7e1fb0a6e07c530497b003a);
+        
+    
+        var popup_7a138eea05bcd0b27fef1e34815066c5 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_fc6f494b118b77b82245f2e1924682bb = $(`<div id="html_fc6f494b118b77b82245f2e1924682bb" style="width: 100.0%; height: 100.0%;"><b>San Teodoro La Cinta</b><br>Year: <b>2022</b><br>items/100m: <b style='color:#27ae60'>86.5</b></div>`)[0];
+                popup_7a138eea05bcd0b27fef1e34815066c5.setContent(html_fc6f494b118b77b82245f2e1924682bb);
+            
+        
+
+        circle_marker_6cabbf1c4c745252e68a705193e7ed00.bindPopup(popup_7a138eea05bcd0b27fef1e34815066c5)
+        ;
+
+        
+    
+    
+            circle_marker_6cabbf1c4c745252e68a705193e7ed00.bindTooltip(
+                `<div>
+                     🏖️ San Teodoro La Cinta 2022: 86 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_87315fe0a099c786dafc84f602e3de4d = L.circleMarker(
+                [38.95879, 8.61167],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e74c3c", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.35, "stroke": true, "weight": 2}
+            ).addTo(feature_group_b984fa20c7e1fb0a6e07c530497b003a);
+        
+    
+        var popup_1c4017af5591c1904978bd34710d669f = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_2c07c5358446403c2455f2fdc3c45bad = $(`<div id="html_2c07c5358446403c2455f2fdc3c45bad" style="width: 100.0%; height: 100.0%;"><b>S.A. Arresi Porto Pino</b><br>Year: <b>2022</b><br>items/100m: <b style='color:#e74c3c'>321.0</b></div>`)[0];
+                popup_1c4017af5591c1904978bd34710d669f.setContent(html_2c07c5358446403c2455f2fdc3c45bad);
+            
+        
+
+        circle_marker_87315fe0a099c786dafc84f602e3de4d.bindPopup(popup_1c4017af5591c1904978bd34710d669f)
+        ;
+
+        
+    
+    
+            circle_marker_87315fe0a099c786dafc84f602e3de4d.bindTooltip(
+                `<div>
+                     🏖️ S.A. Arresi Porto Pino 2022: 321 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var feature_group_d066f65070424ea5b321d2c906750c2c = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_20d3d8a73afe7b2d2cfed09935f8fdaa = L.circleMarker(
+                [40.58593, 8.30683],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e74c3c", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.4, "stroke": true, "weight": 2}
+            ).addTo(feature_group_d066f65070424ea5b321d2c906750c2c);
+        
+    
+        var popup_60e5003a011ae1385625d25b3ad3ba9e = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_18587b1a6d92d8ebaf314065ece745fa = $(`<div id="html_18587b1a6d92d8ebaf314065ece745fa" style="width: 100.0%; height: 100.0%;"><b>Alghero Lido</b><br>Year: <b>2023</b><br>items/100m: <b style='color:#e74c3c'>384.0</b></div>`)[0];
+                popup_60e5003a011ae1385625d25b3ad3ba9e.setContent(html_18587b1a6d92d8ebaf314065ece745fa);
+            
+        
+
+        circle_marker_20d3d8a73afe7b2d2cfed09935f8fdaa.bindPopup(popup_60e5003a011ae1385625d25b3ad3ba9e)
+        ;
+
+        
+    
+    
+            circle_marker_20d3d8a73afe7b2d2cfed09935f8fdaa.bindTooltip(
+                `<div>
+                     🏖️ Alghero Lido 2023: 384 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_87f3d360eead24a19eb20c3478c1314b = L.circleMarker(
+                [39.2125, 9.17472],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.683333333333334, "stroke": true, "weight": 2}
+            ).addTo(feature_group_d066f65070424ea5b321d2c906750c2c);
+        
+    
+        var popup_7b8324d2e224b594dd425a7530252c21 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_f62a856696e8aa83181ea36be6120400 = $(`<div id="html_f62a856696e8aa83181ea36be6120400" style="width: 100.0%; height: 100.0%;"><b>Cagliari Poetto</b><br>Year: <b>2023</b><br>items/100m: <b style='color:#f39c12'>281.0</b></div>`)[0];
+                popup_7b8324d2e224b594dd425a7530252c21.setContent(html_f62a856696e8aa83181ea36be6120400);
+            
+        
+
+        circle_marker_87f3d360eead24a19eb20c3478c1314b.bindPopup(popup_7b8324d2e224b594dd425a7530252c21)
+        ;
+
+        
+    
+    
+            circle_marker_87f3d360eead24a19eb20c3478c1314b.bindTooltip(
+                `<div>
+                     🏖️ Cagliari Poetto 2023: 281 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5bfc4f1ff9a79e4e560c64c08d4d67f9 = L.circleMarker(
+                [39.26416, 9.58138],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10.258333333333333, "stroke": true, "weight": 2}
+            ).addTo(feature_group_d066f65070424ea5b321d2c906750c2c);
+        
+    
+        var popup_ae8edb868341bf8d3312074ec66c1b6a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_60ff379fe0acc99efd31f8f8daf7bff5 = $(`<div id="html_60ff379fe0acc99efd31f8f8daf7bff5" style="width: 100.0%; height: 100.0%;"><b>Castiadas Costa Rei</b><br>Year: <b>2023</b><br>items/100m: <b style='color:#f39c12'>135.5</b></div>`)[0];
+                popup_ae8edb868341bf8d3312074ec66c1b6a.setContent(html_60ff379fe0acc99efd31f8f8daf7bff5);
+            
+        
+
+        circle_marker_5bfc4f1ff9a79e4e560c64c08d4d67f9.bindPopup(popup_ae8edb868341bf8d3312074ec66c1b6a)
+        ;
+
+        
+    
+    
+            circle_marker_5bfc4f1ff9a79e4e560c64c08d4d67f9.bindTooltip(
+                `<div>
+                     🏖️ Castiadas Costa Rei 2023: 136 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_321e953fd94ab3419ac679bdcca6b1c9 = L.circleMarker(
+                [40.06952, 8.47871],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e74c3c", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.525, "stroke": true, "weight": 2}
+            ).addTo(feature_group_d066f65070424ea5b321d2c906750c2c);
+        
+    
+        var popup_15c705bacd93c03e42c67870e4bcf87b = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_18ced26a5c71342de36f7db78a110ae5 = $(`<div id="html_18ced26a5c71342de36f7db78a110ae5" style="width: 100.0%; height: 100.0%;"><b>Oristano Is Arenas</b><br>Year: <b>2023</b><br>items/100m: <b style='color:#e74c3c'>391.5</b></div>`)[0];
+                popup_15c705bacd93c03e42c67870e4bcf87b.setContent(html_18ced26a5c71342de36f7db78a110ae5);
+            
+        
+
+        circle_marker_321e953fd94ab3419ac679bdcca6b1c9.bindPopup(popup_15c705bacd93c03e42c67870e4bcf87b)
+        ;
+
+        
+    
+    
+            circle_marker_321e953fd94ab3419ac679bdcca6b1c9.bindTooltip(
+                `<div>
+                     🏖️ Oristano Is Arenas 2023: 392 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a4c008002163e184ccc94524f95cb77e = L.circleMarker(
+                [40.788277, 9.670278],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#27ae60", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.083333333333334, "stroke": true, "weight": 2}
+            ).addTo(feature_group_d066f65070424ea5b321d2c906750c2c);
+        
+    
+        var popup_aa7ef525e5d768f1e17a389e52ec9db9 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_0f4c01ec4e14c405cc96ebd6c00386f7 = $(`<div id="html_0f4c01ec4e14c405cc96ebd6c00386f7" style="width: 100.0%; height: 100.0%;"><b>San Teodoro La Cinta</b><br>Year: <b>2023</b><br>items/100m: <b style='color:#27ae60'>65.0</b></div>`)[0];
+                popup_aa7ef525e5d768f1e17a389e52ec9db9.setContent(html_0f4c01ec4e14c405cc96ebd6c00386f7);
+            
+        
+
+        circle_marker_a4c008002163e184ccc94524f95cb77e.bindPopup(popup_aa7ef525e5d768f1e17a389e52ec9db9)
+        ;
+
+        
+    
+    
+            circle_marker_a4c008002163e184ccc94524f95cb77e.bindTooltip(
+                `<div>
+                     🏖️ San Teodoro La Cinta 2023: 65 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a67a34cdb6b6ed4a508aadc14d502f6d = L.circleMarker(
+                [38.95879, 8.61167],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f39c12", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.341666666666667, "stroke": true, "weight": 2}
+            ).addTo(feature_group_d066f65070424ea5b321d2c906750c2c);
+        
+    
+        var popup_e041b0e81c1845cc34c14a8f7d186413 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_85d4f011dcf7a19651222dea5b93973f = $(`<div id="html_85d4f011dcf7a19651222dea5b93973f" style="width: 100.0%; height: 100.0%;"><b>S.A. Arresi Porto Pino</b><br>Year: <b>2023</b><br>items/100m: <b style='color:#f39c12'>260.5</b></div>`)[0];
+                popup_e041b0e81c1845cc34c14a8f7d186413.setContent(html_85d4f011dcf7a19651222dea5b93973f);
+            
+        
+
+        circle_marker_a67a34cdb6b6ed4a508aadc14d502f6d.bindPopup(popup_e041b0e81c1845cc34c14a8f7d186413)
+        ;
+
+        
+    
+    
+            circle_marker_a67a34cdb6b6ed4a508aadc14d502f6d.bindTooltip(
+                `<div>
+                     🏖️ S.A. Arresi Porto Pino 2023: 260 items/100m
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            feature_group_d066f65070424ea5b321d2c906750c2c.addTo(map_6055fb40374a094253cd387be7564417);
+        
+    
+            var feature_group_8ca435774161dbe66cb6a691eb0c05bd = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var regular_polygon_marker_3173e4b7b5b16c06239949954e82a5f3 = new L.RegularPolygonMarker(
+                [39.12184, 9.22315355],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 9.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_d32092e2455d44dc05f8b2721b4579db = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_4f0f60a26fcf0dd4d083168753dbb4e0 = $(`<div id="html_4f0f60a26fcf0dd4d083168753dbb4e0" style="width: 100.0%; height: 100.0%;"><b>0004-MS00200_TR06</b><br>Year: <b>2021</b><br>Obs: <b>20</b><br>Plastic: <b>50.0%</b></div>`)[0];
+                popup_d32092e2455d44dc05f8b2721b4579db.setContent(html_4f0f60a26fcf0dd4d083168753dbb4e0);
+            
+        
+
+        regular_polygon_marker_3173e4b7b5b16c06239949954e82a5f3.bindPopup(popup_d32092e2455d44dc05f8b2721b4579db)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_3173e4b7b5b16c06239949954e82a5f3.bindTooltip(
+                `<div>
+                     🌊 0004-MS00200_TR06 2021: 20 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_7b2628c380d826c040f5c01122fb1ed6 = new L.RegularPolygonMarker(
+                [39.023896, 9.248386794],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 13.625,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_9b3d4846ccbe9f09b084c4b40d401507 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_dc9e8b5cbd2a36c55ad117f46759a41e = $(`<div id="html_dc9e8b5cbd2a36c55ad117f46759a41e" style="width: 100.0%; height: 100.0%;"><b>0004-MS00200_TR12</b><br>Year: <b>2021</b><br>Obs: <b>53</b><br>Plastic: <b>37.7%</b></div>`)[0];
+                popup_9b3d4846ccbe9f09b084c4b40d401507.setContent(html_dc9e8b5cbd2a36c55ad117f46759a41e);
+            
+        
+
+        regular_polygon_marker_7b2628c380d826c040f5c01122fb1ed6.bindPopup(popup_9b3d4846ccbe9f09b084c4b40d401507)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_7b2628c380d826c040f5c01122fb1ed6.bindTooltip(
+                `<div>
+                     🌊 0004-MS00200_TR12 2021: 53 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_10f764ae041de9e21ba7c6dd7f8e7a12 = new L.RegularPolygonMarker(
+                [39.034544, 9.498402779],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.75,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_7cd7d9f8a15af720ea403cd688fff1c6 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b966ac0a8b47b9c29883df6f85184cad = $(`<div id="html_b966ac0a8b47b9c29883df6f85184cad" style="width: 100.0%; height: 100.0%;"><b>0018-MS00110_TR06</b><br>Year: <b>2021</b><br>Obs: <b>14</b><br>Plastic: <b>85.7%</b></div>`)[0];
+                popup_7cd7d9f8a15af720ea403cd688fff1c6.setContent(html_b966ac0a8b47b9c29883df6f85184cad);
+            
+        
+
+        regular_polygon_marker_10f764ae041de9e21ba7c6dd7f8e7a12.bindPopup(popup_7cd7d9f8a15af720ea403cd688fff1c6)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_10f764ae041de9e21ba7c6dd7f8e7a12.bindTooltip(
+                `<div>
+                     🌊 0018-MS00110_TR06 2021: 14 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_a0c615becb37914dbc05c5e0c24be796 = new L.RegularPolygonMarker(
+                [38.934759, 9.515226699],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 11.125,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_25a0ba522b35e8c6991101575a7485c7 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_286567780613b8af0caa0d9a75d76049 = $(`<div id="html_286567780613b8af0caa0d9a75d76049" style="width: 100.0%; height: 100.0%;"><b>0018-MS00110_TR12</b><br>Year: <b>2021</b><br>Obs: <b>33</b><br>Plastic: <b>69.7%</b></div>`)[0];
+                popup_25a0ba522b35e8c6991101575a7485c7.setContent(html_286567780613b8af0caa0d9a75d76049);
+            
+        
+
+        regular_polygon_marker_a0c615becb37914dbc05c5e0c24be796.bindPopup(popup_25a0ba522b35e8c6991101575a7485c7)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_a0c615becb37914dbc05c5e0c24be796.bindTooltip(
+                `<div>
+                     🌊 0018-MS00110_TR12 2021: 33 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_846613aaf9c2930f39ee61a94e12c355 = new L.RegularPolygonMarker(
+                [39.950342, 9.815153906],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.25,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_9f07e53d590e3d928ecda3284f8a1480 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_86d2e01361062f7df5c7c79612fc5de0 = $(`<div id="html_86d2e01361062f7df5c7c79612fc5de0" style="width: 100.0%; height: 100.0%;"><b>0073-MS00370_TR06</b><br>Year: <b>2021</b><br>Obs: <b>10</b><br>Plastic: <b>90.0%</b></div>`)[0];
+                popup_9f07e53d590e3d928ecda3284f8a1480.setContent(html_86d2e01361062f7df5c7c79612fc5de0);
+            
+        
+
+        regular_polygon_marker_846613aaf9c2930f39ee61a94e12c355.bindPopup(popup_9f07e53d590e3d928ecda3284f8a1480)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_846613aaf9c2930f39ee61a94e12c355.bindTooltip(
+                `<div>
+                     🌊 0073-MS00370_TR06 2021: 10 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_a2eebd751682cf017c561d2a23e4f456 = new L.RegularPolygonMarker(
+                [39.950543, 9.944859824],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 12.0,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_87ec4d8dd8ae2020829aeb63ca42b6ff = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_7cbec21c2149f3035815f2deb0f5f7a9 = $(`<div id="html_7cbec21c2149f3035815f2deb0f5f7a9" style="width: 100.0%; height: 100.0%;"><b>0073-MS00370_TR12</b><br>Year: <b>2021</b><br>Obs: <b>40</b><br>Plastic: <b>100.0%</b></div>`)[0];
+                popup_87ec4d8dd8ae2020829aeb63ca42b6ff.setContent(html_7cbec21c2149f3035815f2deb0f5f7a9);
+            
+        
+
+        regular_polygon_marker_a2eebd751682cf017c561d2a23e4f456.bindPopup(popup_87ec4d8dd8ae2020829aeb63ca42b6ff)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_a2eebd751682cf017c561d2a23e4f456.bindTooltip(
+                `<div>
+                     🌊 0073-MS00370_TR12 2021: 40 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_c134e8d4e36e8a70f037ca4af06b6e0b = new L.RegularPolygonMarker(
+                [40.993467, 9.67835],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_b20c337fa5529a28e99038b5c0636079 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_82c29c65dd249a417ccdb70e5cf62879 = $(`<div id="html_82c29c65dd249a417ccdb70e5cf62879" style="width: 100.0%; height: 100.0%;"><b>0129-MS00730_TR06</b><br>Year: <b>2021</b><br>Obs: <b>4</b><br>Plastic: <b>50.0%</b></div>`)[0];
+                popup_b20c337fa5529a28e99038b5c0636079.setContent(html_82c29c65dd249a417ccdb70e5cf62879);
+            
+        
+
+        regular_polygon_marker_c134e8d4e36e8a70f037ca4af06b6e0b.bindPopup(popup_b20c337fa5529a28e99038b5c0636079)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_c134e8d4e36e8a70f037ca4af06b6e0b.bindTooltip(
+                `<div>
+                     🌊 0129-MS00730_TR06 2021: 4 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_56bbd536e2c0c4929381dff535d6801b = new L.RegularPolygonMarker(
+                [41.055417, 9.782383333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.375,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_94e409b9017efa1ffe8e94baa24ee69d = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_188f10df30227d73bd9b5083c3cc26e7 = $(`<div id="html_188f10df30227d73bd9b5083c3cc26e7" style="width: 100.0%; height: 100.0%;"><b>0129-MS00730_TR12</b><br>Year: <b>2021</b><br>Obs: <b>11</b><br>Plastic: <b>90.9%</b></div>`)[0];
+                popup_94e409b9017efa1ffe8e94baa24ee69d.setContent(html_188f10df30227d73bd9b5083c3cc26e7);
+            
+        
+
+        regular_polygon_marker_56bbd536e2c0c4929381dff535d6801b.bindPopup(popup_94e409b9017efa1ffe8e94baa24ee69d)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_56bbd536e2c0c4929381dff535d6801b.bindTooltip(
+                `<div>
+                     🌊 0129-MS00730_TR12 2021: 11 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_5557c3253aecb9562d2ea84784b8c41e = new L.RegularPolygonMarker(
+                [40.9376, 8.402183333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.125,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_ad78756e53b9f4623dd310e8c360e822 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_a9ad0ac644c15c88576346a4be570510 = $(`<div id="html_a9ad0ac644c15c88576346a4be570510" style="width: 100.0%; height: 100.0%;"><b>0182-MS01070_TR06</b><br>Year: <b>2021</b><br>Obs: <b>1</b><br>Plastic: <b>100.0%</b></div>`)[0];
+                popup_ad78756e53b9f4623dd310e8c360e822.setContent(html_a9ad0ac644c15c88576346a4be570510);
+            
+        
+
+        regular_polygon_marker_5557c3253aecb9562d2ea84784b8c41e.bindPopup(popup_ad78756e53b9f4623dd310e8c360e822)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_5557c3253aecb9562d2ea84784b8c41e.bindTooltip(
+                `<div>
+                     🌊 0182-MS01070_TR06 2021: 1 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_e83d2332c6c36c2f3e04a82f9d530638 = new L.RegularPolygonMarker(
+                [41.037033, 8.421433333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.625,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_60e8a2ae8caf00fce91ad9bb060a7857 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_4cfe3cebb13321c16cbdf20ecae8c328 = $(`<div id="html_4cfe3cebb13321c16cbdf20ecae8c328" style="width: 100.0%; height: 100.0%;"><b>0182-MS01070_TR12</b><br>Year: <b>2021</b><br>Obs: <b>5</b><br>Plastic: <b>60.0%</b></div>`)[0];
+                popup_60e8a2ae8caf00fce91ad9bb060a7857.setContent(html_4cfe3cebb13321c16cbdf20ecae8c328);
+            
+        
+
+        regular_polygon_marker_e83d2332c6c36c2f3e04a82f9d530638.bindPopup(popup_60e8a2ae8caf00fce91ad9bb060a7857)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_e83d2332c6c36c2f3e04a82f9d530638.bindTooltip(
+                `<div>
+                     🌊 0182-MS01070_TR12 2021: 5 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_866f0d6644089f36e6015ba6d15674b5 = new L.RegularPolygonMarker(
+                [40.486933, 8.21605],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.25,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_2cb8f6eaef47fc87b1ecb25ab3fb5033 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_1c333bb4391432a5b56c59230ac34d1c = $(`<div id="html_1c333bb4391432a5b56c59230ac34d1c" style="width: 100.0%; height: 100.0%;"><b>0192-MS01200_TR06</b><br>Year: <b>2021</b><br>Obs: <b>10</b><br>Plastic: <b>100.0%</b></div>`)[0];
+                popup_2cb8f6eaef47fc87b1ecb25ab3fb5033.setContent(html_1c333bb4391432a5b56c59230ac34d1c);
+            
+        
+
+        regular_polygon_marker_866f0d6644089f36e6015ba6d15674b5.bindPopup(popup_2cb8f6eaef47fc87b1ecb25ab3fb5033)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_866f0d6644089f36e6015ba6d15674b5.bindTooltip(
+                `<div>
+                     🌊 0192-MS01200_TR06 2021: 10 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_204cba1262848a1732f51e7001b4949a = new L.RegularPolygonMarker(
+                [40.417167, 8.12245],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 10.375,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_3bb6d86adc52cb51b0825b037ac966be = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_24a1495fb4880fc2cd5337da17fed2f9 = $(`<div id="html_24a1495fb4880fc2cd5337da17fed2f9" style="width: 100.0%; height: 100.0%;"><b>0192-MS01200_TR12</b><br>Year: <b>2021</b><br>Obs: <b>27</b><br>Plastic: <b>96.3%</b></div>`)[0];
+                popup_3bb6d86adc52cb51b0825b037ac966be.setContent(html_24a1495fb4880fc2cd5337da17fed2f9);
+            
+        
+
+        regular_polygon_marker_204cba1262848a1732f51e7001b4949a.bindPopup(popup_3bb6d86adc52cb51b0825b037ac966be)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_204cba1262848a1732f51e7001b4949a.bindTooltip(
+                `<div>
+                     🌊 0192-MS01200_TR12 2021: 27 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_d841422a5635c1db4a2a7aa80037552d = new L.RegularPolygonMarker(
+                [39.825853, 8.438476544],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.375,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_8ca435774161dbe66cb6a691eb0c05bd);
+        
+    
+        var popup_f4a452ff869d0623fd1ed16b1ce55bcc = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_e325aa53696e8bfc11d72f7c894dcfe1 = $(`<div id="html_e325aa53696e8bfc11d72f7c894dcfe1" style="width: 100.0%; height: 100.0%;"><b>0222-MS01380_TR06</b><br>Year: <b>2021</b><br>Obs: <b>3</b><br>Plastic: <b>0.0%</b></div>`)[0];
+                popup_f4a452ff869d0623fd1ed16b1ce55bcc.setContent(html_e325aa53696e8bfc11d72f7c894dcfe1);
+            
+        
+
+        regular_polygon_marker_d841422a5635c1db4a2a7aa80037552d.bindPopup(popup_f4a452ff869d0623fd1ed16b1ce55bcc)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_d841422a5635c1db4a2a7aa80037552d.bindTooltip(
+                `<div>
+                     🌊 0222-MS01380_TR06 2021: 3 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var feature_group_35b34ce0ca4007700a0f0e45ebb66a9d = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var regular_polygon_marker_4ec30de9f821e7e5aaad6f1cb559ab0b = new L.RegularPolygonMarker(
+                [39.12184, 9.22315355],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 11.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_1259746df140dc117e4185d90a632de1 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_1034a18c910b72bce761d361d7929c44 = $(`<div id="html_1034a18c910b72bce761d361d7929c44" style="width: 100.0%; height: 100.0%;"><b>0004-MS00200_TR06</b><br>Year: <b>2022</b><br>Obs: <b>36</b><br>Plastic: <b>33.3%</b></div>`)[0];
+                popup_1259746df140dc117e4185d90a632de1.setContent(html_1034a18c910b72bce761d361d7929c44);
+            
+        
+
+        regular_polygon_marker_4ec30de9f821e7e5aaad6f1cb559ab0b.bindPopup(popup_1259746df140dc117e4185d90a632de1)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_4ec30de9f821e7e5aaad6f1cb559ab0b.bindTooltip(
+                `<div>
+                     🌊 0004-MS00200_TR06 2022: 36 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_2cde8ae0b95f7ae89531e322ebe5ccda = new L.RegularPolygonMarker(
+                [39.023896, 9.248386794],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 11.0,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_9657bc4f0635beed7a378a2a811397be = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b930f537fbe641ec6c3ef8706f6d1a2f = $(`<div id="html_b930f537fbe641ec6c3ef8706f6d1a2f" style="width: 100.0%; height: 100.0%;"><b>0004-MS00200_TR12</b><br>Year: <b>2022</b><br>Obs: <b>32</b><br>Plastic: <b>31.2%</b></div>`)[0];
+                popup_9657bc4f0635beed7a378a2a811397be.setContent(html_b930f537fbe641ec6c3ef8706f6d1a2f);
+            
+        
+
+        regular_polygon_marker_2cde8ae0b95f7ae89531e322ebe5ccda.bindPopup(popup_9657bc4f0635beed7a378a2a811397be)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_2cde8ae0b95f7ae89531e322ebe5ccda.bindTooltip(
+                `<div>
+                     🌊 0004-MS00200_TR12 2022: 32 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_a31230cc36af047f6e0fc829934179f4 = new L.RegularPolygonMarker(
+                [39.034544, 9.498402779],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.75,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_b339642f575ba1f08ff8be2941111a42 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_88df6520ce930d8c3f46a27e85de0631 = $(`<div id="html_88df6520ce930d8c3f46a27e85de0631" style="width: 100.0%; height: 100.0%;"><b>0018-MS00110_TR06</b><br>Year: <b>2022</b><br>Obs: <b>6</b><br>Plastic: <b>50.0%</b></div>`)[0];
+                popup_b339642f575ba1f08ff8be2941111a42.setContent(html_88df6520ce930d8c3f46a27e85de0631);
+            
+        
+
+        regular_polygon_marker_a31230cc36af047f6e0fc829934179f4.bindPopup(popup_b339642f575ba1f08ff8be2941111a42)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_a31230cc36af047f6e0fc829934179f4.bindTooltip(
+                `<div>
+                     🌊 0018-MS00110_TR06 2022: 6 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_4e06ae74c1a2d2e042818f81c50accc0 = new L.RegularPolygonMarker(
+                [38.934759, 9.515226699],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 10.125,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_a55eeead62d0a270fc551e50ed1cdb99 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_339777c03ed998adc0c1c77a843d6e88 = $(`<div id="html_339777c03ed998adc0c1c77a843d6e88" style="width: 100.0%; height: 100.0%;"><b>0018-MS00110_TR12</b><br>Year: <b>2022</b><br>Obs: <b>25</b><br>Plastic: <b>52.0%</b></div>`)[0];
+                popup_a55eeead62d0a270fc551e50ed1cdb99.setContent(html_339777c03ed998adc0c1c77a843d6e88);
+            
+        
+
+        regular_polygon_marker_4e06ae74c1a2d2e042818f81c50accc0.bindPopup(popup_a55eeead62d0a270fc551e50ed1cdb99)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_4e06ae74c1a2d2e042818f81c50accc0.bindTooltip(
+                `<div>
+                     🌊 0018-MS00110_TR12 2022: 25 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_91acb3d219e86f0c42e7d6541c222f6c = new L.RegularPolygonMarker(
+                [39.950342, 9.815153906],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.75,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_46f68000c791bafab61ce9a08beee407 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_5ce55ed316a49df7e9f66244595e2052 = $(`<div id="html_5ce55ed316a49df7e9f66244595e2052" style="width: 100.0%; height: 100.0%;"><b>0073-MS00370_TR06</b><br>Year: <b>2022</b><br>Obs: <b>6</b><br>Plastic: <b>100.0%</b></div>`)[0];
+                popup_46f68000c791bafab61ce9a08beee407.setContent(html_5ce55ed316a49df7e9f66244595e2052);
+            
+        
+
+        regular_polygon_marker_91acb3d219e86f0c42e7d6541c222f6c.bindPopup(popup_46f68000c791bafab61ce9a08beee407)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_91acb3d219e86f0c42e7d6541c222f6c.bindTooltip(
+                `<div>
+                     🌊 0073-MS00370_TR06 2022: 6 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_0aca17bd919bad0d1a601b845e03c542 = new L.RegularPolygonMarker(
+                [39.950543, 9.944859824],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 11.375,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_02645c87459cc19034db383a1c83dafb = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_88f3ae26625862ddd05ba36714673255 = $(`<div id="html_88f3ae26625862ddd05ba36714673255" style="width: 100.0%; height: 100.0%;"><b>0073-MS00370_TR12</b><br>Year: <b>2022</b><br>Obs: <b>35</b><br>Plastic: <b>68.6%</b></div>`)[0];
+                popup_02645c87459cc19034db383a1c83dafb.setContent(html_88f3ae26625862ddd05ba36714673255);
+            
+        
+
+        regular_polygon_marker_0aca17bd919bad0d1a601b845e03c542.bindPopup(popup_02645c87459cc19034db383a1c83dafb)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_0aca17bd919bad0d1a601b845e03c542.bindTooltip(
+                `<div>
+                     🌊 0073-MS00370_TR12 2022: 35 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_2ba7d61b28efbc3b8e60f4f7bae9e832 = new L.RegularPolygonMarker(
+                [40.993467, 9.67835],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_9875c8794d51adce43e8d027f0b9aeb4 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_ad122c2935c9097b1fd264d7d2b97c71 = $(`<div id="html_ad122c2935c9097b1fd264d7d2b97c71" style="width: 100.0%; height: 100.0%;"><b>0129-MS00730_TR06</b><br>Year: <b>2022</b><br>Obs: <b>4</b><br>Plastic: <b>75.0%</b></div>`)[0];
+                popup_9875c8794d51adce43e8d027f0b9aeb4.setContent(html_ad122c2935c9097b1fd264d7d2b97c71);
+            
+        
+
+        regular_polygon_marker_2ba7d61b28efbc3b8e60f4f7bae9e832.bindPopup(popup_9875c8794d51adce43e8d027f0b9aeb4)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_2ba7d61b28efbc3b8e60f4f7bae9e832.bindTooltip(
+                `<div>
+                     🌊 0129-MS00730_TR06 2022: 4 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_b4aaa5d82b131bc2a8f3a444804b1680 = new L.RegularPolygonMarker(
+                [41.055417, 9.782383333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.25,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_58de955bcc2e4beefeb7da2575d696c9 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_fc341e365c3aaa760c7edfddc106dab7 = $(`<div id="html_fc341e365c3aaa760c7edfddc106dab7" style="width: 100.0%; height: 100.0%;"><b>0129-MS00730_TR12</b><br>Year: <b>2022</b><br>Obs: <b>10</b><br>Plastic: <b>70.0%</b></div>`)[0];
+                popup_58de955bcc2e4beefeb7da2575d696c9.setContent(html_fc341e365c3aaa760c7edfddc106dab7);
+            
+        
+
+        regular_polygon_marker_b4aaa5d82b131bc2a8f3a444804b1680.bindPopup(popup_58de955bcc2e4beefeb7da2575d696c9)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_b4aaa5d82b131bc2a8f3a444804b1680.bindTooltip(
+                `<div>
+                     🌊 0129-MS00730_TR12 2022: 10 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_3542dbf44afa35bf2e96076a6aecfc70 = new L.RegularPolygonMarker(
+                [40.9376, 8.402183333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.625,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_44805da9e6fccad326d120393451c299 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_62d987578220565d2aed8656f4171b2b = $(`<div id="html_62d987578220565d2aed8656f4171b2b" style="width: 100.0%; height: 100.0%;"><b>0182-MS01070_TR06</b><br>Year: <b>2022</b><br>Obs: <b>13</b><br>Plastic: <b>61.5%</b></div>`)[0];
+                popup_44805da9e6fccad326d120393451c299.setContent(html_62d987578220565d2aed8656f4171b2b);
+            
+        
+
+        regular_polygon_marker_3542dbf44afa35bf2e96076a6aecfc70.bindPopup(popup_44805da9e6fccad326d120393451c299)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_3542dbf44afa35bf2e96076a6aecfc70.bindTooltip(
+                `<div>
+                     🌊 0182-MS01070_TR06 2022: 13 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_6f0f2dfc746ee6e982af492b8aef572a = new L.RegularPolygonMarker(
+                [41.037033, 8.421433333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.875,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_26a1d6577de9e2eb47d9449974764653 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_18d20c430ebb2e202eb934bdb8b0cb4c = $(`<div id="html_18d20c430ebb2e202eb934bdb8b0cb4c" style="width: 100.0%; height: 100.0%;"><b>0182-MS01070_TR12</b><br>Year: <b>2022</b><br>Obs: <b>7</b><br>Plastic: <b>71.4%</b></div>`)[0];
+                popup_26a1d6577de9e2eb47d9449974764653.setContent(html_18d20c430ebb2e202eb934bdb8b0cb4c);
+            
+        
+
+        regular_polygon_marker_6f0f2dfc746ee6e982af492b8aef572a.bindPopup(popup_26a1d6577de9e2eb47d9449974764653)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_6f0f2dfc746ee6e982af492b8aef572a.bindTooltip(
+                `<div>
+                     🌊 0182-MS01070_TR12 2022: 7 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_f8b98ef370a9c42b2b72d476e7de004d = new L.RegularPolygonMarker(
+                [40.486933, 8.21605],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_0968ff1d0b2aad888af61b53cc167f04 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_467e01f30650cdb5c2f33edf0671e72c = $(`<div id="html_467e01f30650cdb5c2f33edf0671e72c" style="width: 100.0%; height: 100.0%;"><b>0192-MS01200_TR06</b><br>Year: <b>2022</b><br>Obs: <b>4</b><br>Plastic: <b>50.0%</b></div>`)[0];
+                popup_0968ff1d0b2aad888af61b53cc167f04.setContent(html_467e01f30650cdb5c2f33edf0671e72c);
+            
+        
+
+        regular_polygon_marker_f8b98ef370a9c42b2b72d476e7de004d.bindPopup(popup_0968ff1d0b2aad888af61b53cc167f04)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_f8b98ef370a9c42b2b72d476e7de004d.bindTooltip(
+                `<div>
+                     🌊 0192-MS01200_TR06 2022: 4 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_a8e9ccedd0bad6c370fc8001e753eeb7 = new L.RegularPolygonMarker(
+                [40.417167, 8.12245],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.625,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_18cba647c9e735331d363e3e6166f047 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_2f4ca91b754bb180d84d943d103de23c = $(`<div id="html_2f4ca91b754bb180d84d943d103de23c" style="width: 100.0%; height: 100.0%;"><b>0192-MS01200_TR12</b><br>Year: <b>2022</b><br>Obs: <b>5</b><br>Plastic: <b>80.0%</b></div>`)[0];
+                popup_18cba647c9e735331d363e3e6166f047.setContent(html_2f4ca91b754bb180d84d943d103de23c);
+            
+        
+
+        regular_polygon_marker_a8e9ccedd0bad6c370fc8001e753eeb7.bindPopup(popup_18cba647c9e735331d363e3e6166f047)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_a8e9ccedd0bad6c370fc8001e753eeb7.bindTooltip(
+                `<div>
+                     🌊 0192-MS01200_TR12 2022: 5 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_e40510c530746ac45de9002f75930227 = new L.RegularPolygonMarker(
+                [39.825853, 8.438476544],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 9.625,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_bd8e8ea20f020919229396c2bfdcc19a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_dfff2154e75eda16d0c5b28115585a88 = $(`<div id="html_dfff2154e75eda16d0c5b28115585a88" style="width: 100.0%; height: 100.0%;"><b>0222-MS01380_TR06</b><br>Year: <b>2022</b><br>Obs: <b>21</b><br>Plastic: <b>0.0%</b></div>`)[0];
+                popup_bd8e8ea20f020919229396c2bfdcc19a.setContent(html_dfff2154e75eda16d0c5b28115585a88);
+            
+        
+
+        regular_polygon_marker_e40510c530746ac45de9002f75930227.bindPopup(popup_bd8e8ea20f020919229396c2bfdcc19a)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_e40510c530746ac45de9002f75930227.bindTooltip(
+                `<div>
+                     🌊 0222-MS01380_TR06 2022: 21 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_d451c822e905f144e113305f70b16ef9 = new L.RegularPolygonMarker(
+                [39.75228, 8.34534583],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.375,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_35b34ce0ca4007700a0f0e45ebb66a9d);
+        
+    
+        var popup_106303252fe32de0cce40617c643a2b5 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_df3a7d6d3d95e7d24ed46e51cf607be0 = $(`<div id="html_df3a7d6d3d95e7d24ed46e51cf607be0" style="width: 100.0%; height: 100.0%;"><b>0222-MS01380_TR12</b><br>Year: <b>2022</b><br>Obs: <b>11</b><br>Plastic: <b>27.3%</b></div>`)[0];
+                popup_106303252fe32de0cce40617c643a2b5.setContent(html_df3a7d6d3d95e7d24ed46e51cf607be0);
+            
+        
+
+        regular_polygon_marker_d451c822e905f144e113305f70b16ef9.bindPopup(popup_106303252fe32de0cce40617c643a2b5)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_d451c822e905f144e113305f70b16ef9.bindTooltip(
+                `<div>
+                     🌊 0222-MS01380_TR12 2022: 11 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var feature_group_e3abd16d7e60e3850ee656839693cb00 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var regular_polygon_marker_7cc87b6b99006ce71283764a59419476 = new L.RegularPolygonMarker(
+                [39.12184, 9.22315355],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 9.375,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_b758f7ce542c9e946ac69cdf79c3310a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b86778fa5dfb3234967b3ba450abda50 = $(`<div id="html_b86778fa5dfb3234967b3ba450abda50" style="width: 100.0%; height: 100.0%;"><b>0004-MS00200_TR06</b><br>Year: <b>2023</b><br>Obs: <b>19</b><br>Plastic: <b>57.9%</b></div>`)[0];
+                popup_b758f7ce542c9e946ac69cdf79c3310a.setContent(html_b86778fa5dfb3234967b3ba450abda50);
+            
+        
+
+        regular_polygon_marker_7cc87b6b99006ce71283764a59419476.bindPopup(popup_b758f7ce542c9e946ac69cdf79c3310a)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_7cc87b6b99006ce71283764a59419476.bindTooltip(
+                `<div>
+                     🌊 0004-MS00200_TR06 2023: 19 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_45d23e58a483a645b03c0cf310d3b311 = new L.RegularPolygonMarker(
+                [39.023896, 9.248386794],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 9.0,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_ff9771d0b1728745b71090ac29d0de9b = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_50811faf4b653f2eaadedebcc185a2c0 = $(`<div id="html_50811faf4b653f2eaadedebcc185a2c0" style="width: 100.0%; height: 100.0%;"><b>0004-MS00200_TR12</b><br>Year: <b>2023</b><br>Obs: <b>16</b><br>Plastic: <b>50.0%</b></div>`)[0];
+                popup_ff9771d0b1728745b71090ac29d0de9b.setContent(html_50811faf4b653f2eaadedebcc185a2c0);
+            
+        
+
+        regular_polygon_marker_45d23e58a483a645b03c0cf310d3b311.bindPopup(popup_ff9771d0b1728745b71090ac29d0de9b)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_45d23e58a483a645b03c0cf310d3b311.bindTooltip(
+                `<div>
+                     🌊 0004-MS00200_TR12 2023: 16 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_e2be76ec35ab260598b683f80c766137 = new L.RegularPolygonMarker(
+                [39.034544, 9.498402779],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.75,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_93e232a92df3eea496a67a83a96f2a8b = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_a9e9fbbecbec34c452c17664ae94a96c = $(`<div id="html_a9e9fbbecbec34c452c17664ae94a96c" style="width: 100.0%; height: 100.0%;"><b>0018-MS00110_TR06</b><br>Year: <b>2023</b><br>Obs: <b>14</b><br>Plastic: <b>57.1%</b></div>`)[0];
+                popup_93e232a92df3eea496a67a83a96f2a8b.setContent(html_a9e9fbbecbec34c452c17664ae94a96c);
+            
+        
+
+        regular_polygon_marker_e2be76ec35ab260598b683f80c766137.bindPopup(popup_93e232a92df3eea496a67a83a96f2a8b)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_e2be76ec35ab260598b683f80c766137.bindTooltip(
+                `<div>
+                     🌊 0018-MS00110_TR06 2023: 14 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_087f4317b6896f0785157fca1b22120b = new L.RegularPolygonMarker(
+                [38.934759, 9.515226699],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 9.0,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_214f3d3f1b60b259886d5662f53f539f = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_469c2ac940ac900a55ea81698fb3a3b3 = $(`<div id="html_469c2ac940ac900a55ea81698fb3a3b3" style="width: 100.0%; height: 100.0%;"><b>0018-MS00110_TR12</b><br>Year: <b>2023</b><br>Obs: <b>16</b><br>Plastic: <b>81.2%</b></div>`)[0];
+                popup_214f3d3f1b60b259886d5662f53f539f.setContent(html_469c2ac940ac900a55ea81698fb3a3b3);
+            
+        
+
+        regular_polygon_marker_087f4317b6896f0785157fca1b22120b.bindPopup(popup_214f3d3f1b60b259886d5662f53f539f)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_087f4317b6896f0785157fca1b22120b.bindTooltip(
+                `<div>
+                     🌊 0018-MS00110_TR12 2023: 16 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_d28640733d0256204d6597ee9704c4f3 = new L.RegularPolygonMarker(
+                [39.950342, 9.815153906],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_7e5405938b5797b6fc50e607808631a2 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_79482c718e43395c0b517d6d507eed1b = $(`<div id="html_79482c718e43395c0b517d6d507eed1b" style="width: 100.0%; height: 100.0%;"><b>0073-MS00370_TR06</b><br>Year: <b>2023</b><br>Obs: <b>4</b><br>Plastic: <b>75.0%</b></div>`)[0];
+                popup_7e5405938b5797b6fc50e607808631a2.setContent(html_79482c718e43395c0b517d6d507eed1b);
+            
+        
+
+        regular_polygon_marker_d28640733d0256204d6597ee9704c4f3.bindPopup(popup_7e5405938b5797b6fc50e607808631a2)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_d28640733d0256204d6597ee9704c4f3.bindTooltip(
+                `<div>
+                     🌊 0073-MS00370_TR06 2023: 4 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_2bdb63180989112bd0b2994d9f1baba3 = new L.RegularPolygonMarker(
+                [39.950543, 9.944859824],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 15.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_a229597436f7f62713ccfae935faedd9 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_91ed53b8b5cf82a8b421feef26583e1a = $(`<div id="html_91ed53b8b5cf82a8b421feef26583e1a" style="width: 100.0%; height: 100.0%;"><b>0073-MS00370_TR12</b><br>Year: <b>2023</b><br>Obs: <b>68</b><br>Plastic: <b>64.7%</b></div>`)[0];
+                popup_a229597436f7f62713ccfae935faedd9.setContent(html_91ed53b8b5cf82a8b421feef26583e1a);
+            
+        
+
+        regular_polygon_marker_2bdb63180989112bd0b2994d9f1baba3.bindPopup(popup_a229597436f7f62713ccfae935faedd9)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_2bdb63180989112bd0b2994d9f1baba3.bindTooltip(
+                `<div>
+                     🌊 0073-MS00370_TR12 2023: 68 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_c9909d769b54bf8291e3cc60cccd164c = new L.RegularPolygonMarker(
+                [40.993467, 9.67835],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.25,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_bad915f3fe208c0c40e5f3c3db6124cb = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_7e6c6fb86b398ad0ed08ccb09c10baea = $(`<div id="html_7e6c6fb86b398ad0ed08ccb09c10baea" style="width: 100.0%; height: 100.0%;"><b>0129-MS00730_TR06</b><br>Year: <b>2023</b><br>Obs: <b>2</b><br>Plastic: <b>50.0%</b></div>`)[0];
+                popup_bad915f3fe208c0c40e5f3c3db6124cb.setContent(html_7e6c6fb86b398ad0ed08ccb09c10baea);
+            
+        
+
+        regular_polygon_marker_c9909d769b54bf8291e3cc60cccd164c.bindPopup(popup_bad915f3fe208c0c40e5f3c3db6124cb)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_c9909d769b54bf8291e3cc60cccd164c.bindTooltip(
+                `<div>
+                     🌊 0129-MS00730_TR06 2023: 2 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_62ae6987e145f330379f9c1bfeca102b = new L.RegularPolygonMarker(
+                [41.055417, 9.782383333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.5,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_a10fa1f56bc43194b80a31dd63d3cf79 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_ee8997646d36ed7cc7936a8c97e0486f = $(`<div id="html_ee8997646d36ed7cc7936a8c97e0486f" style="width: 100.0%; height: 100.0%;"><b>0129-MS00730_TR12</b><br>Year: <b>2023</b><br>Obs: <b>12</b><br>Plastic: <b>75.0%</b></div>`)[0];
+                popup_a10fa1f56bc43194b80a31dd63d3cf79.setContent(html_ee8997646d36ed7cc7936a8c97e0486f);
+            
+        
+
+        regular_polygon_marker_62ae6987e145f330379f9c1bfeca102b.bindPopup(popup_a10fa1f56bc43194b80a31dd63d3cf79)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_62ae6987e145f330379f9c1bfeca102b.bindTooltip(
+                `<div>
+                     🌊 0129-MS00730_TR12 2023: 12 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_01f95da110c53c3789ea2ab7cee4e3d9 = new L.RegularPolygonMarker(
+                [40.9376, 8.402183333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.375,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_aea14e629d264fc7c0544af40fea4cf7 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_02b6ca1dff6585c20950e4a2e658e0f4 = $(`<div id="html_02b6ca1dff6585c20950e4a2e658e0f4" style="width: 100.0%; height: 100.0%;"><b>0182-MS01070_TR06</b><br>Year: <b>2023</b><br>Obs: <b>3</b><br>Plastic: <b>66.7%</b></div>`)[0];
+                popup_aea14e629d264fc7c0544af40fea4cf7.setContent(html_02b6ca1dff6585c20950e4a2e658e0f4);
+            
+        
+
+        regular_polygon_marker_01f95da110c53c3789ea2ab7cee4e3d9.bindPopup(popup_aea14e629d264fc7c0544af40fea4cf7)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_01f95da110c53c3789ea2ab7cee4e3d9.bindTooltip(
+                `<div>
+                     🌊 0182-MS01070_TR06 2023: 3 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_dedbffabbe40b602d5ed4bab9c4d94e3 = new L.RegularPolygonMarker(
+                [41.037033, 8.421433333],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.75,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_5cc265f27a167b195fae3d1f6041d108 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_713f57df7e506557c3be21b28697660e = $(`<div id="html_713f57df7e506557c3be21b28697660e" style="width: 100.0%; height: 100.0%;"><b>0182-MS01070_TR12</b><br>Year: <b>2023</b><br>Obs: <b>14</b><br>Plastic: <b>71.4%</b></div>`)[0];
+                popup_5cc265f27a167b195fae3d1f6041d108.setContent(html_713f57df7e506557c3be21b28697660e);
+            
+        
+
+        regular_polygon_marker_dedbffabbe40b602d5ed4bab9c4d94e3.bindPopup(popup_5cc265f27a167b195fae3d1f6041d108)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_dedbffabbe40b602d5ed4bab9c4d94e3.bindTooltip(
+                `<div>
+                     🌊 0182-MS01070_TR12 2023: 14 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_fa87b018a8c813e8a6c4a01a038863e2 = new L.RegularPolygonMarker(
+                [40.486933, 8.21605],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 7.875,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_f73b954ec5afd44b9f23a1d00223367a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_1b78b68d9bad654554dfff54f6579acb = $(`<div id="html_1b78b68d9bad654554dfff54f6579acb" style="width: 100.0%; height: 100.0%;"><b>0192-MS01200_TR06</b><br>Year: <b>2023</b><br>Obs: <b>7</b><br>Plastic: <b>71.4%</b></div>`)[0];
+                popup_f73b954ec5afd44b9f23a1d00223367a.setContent(html_1b78b68d9bad654554dfff54f6579acb);
+            
+        
+
+        regular_polygon_marker_fa87b018a8c813e8a6c4a01a038863e2.bindPopup(popup_f73b954ec5afd44b9f23a1d00223367a)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_fa87b018a8c813e8a6c4a01a038863e2.bindTooltip(
+                `<div>
+                     🌊 0192-MS01200_TR06 2023: 7 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_b7592b4b8c9c6fc01acb9915a551235d = new L.RegularPolygonMarker(
+                [40.417167, 8.12245],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 11.75,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_6c16fa8127f4814eba27ed06b77ffc6e = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_286948a69c9963a8153d7aa6254a0af4 = $(`<div id="html_286948a69c9963a8153d7aa6254a0af4" style="width: 100.0%; height: 100.0%;"><b>0192-MS01200_TR12</b><br>Year: <b>2023</b><br>Obs: <b>38</b><br>Plastic: <b>76.3%</b></div>`)[0];
+                popup_6c16fa8127f4814eba27ed06b77ffc6e.setContent(html_286948a69c9963a8153d7aa6254a0af4);
+            
+        
+
+        regular_polygon_marker_b7592b4b8c9c6fc01acb9915a551235d.bindPopup(popup_6c16fa8127f4814eba27ed06b77ffc6e)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_b7592b4b8c9c6fc01acb9915a551235d.bindTooltip(
+                `<div>
+                     🌊 0192-MS01200_TR12 2023: 38 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_017381e68a6ef34e7d7804c016711666 = new L.RegularPolygonMarker(
+                [39.825853, 8.438476544],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.25,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_289541a712fef57234254474abecd737 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_e19ebc0d2b1b818ceb3b33527fa79be4 = $(`<div id="html_e19ebc0d2b1b818ceb3b33527fa79be4" style="width: 100.0%; height: 100.0%;"><b>0222-MS01380_TR06</b><br>Year: <b>2023</b><br>Obs: <b>10</b><br>Plastic: <b>40.0%</b></div>`)[0];
+                popup_289541a712fef57234254474abecd737.setContent(html_e19ebc0d2b1b818ceb3b33527fa79be4);
+            
+        
+
+        regular_polygon_marker_017381e68a6ef34e7d7804c016711666.bindPopup(popup_289541a712fef57234254474abecd737)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_017381e68a6ef34e7d7804c016711666.bindTooltip(
+                `<div>
+                     🌊 0222-MS01380_TR06 2023: 10 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var regular_polygon_marker_1adb33ede7c47793ca5c4a7cac368d55 = new L.RegularPolygonMarker(
+                [39.75228, 8.34534583],
+                {
+  "stroke": true,
+  "color": "white",
+  "weight": 2,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#2980b9",
+  "fillOpacity": 0.8,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 8.125,
+  "numberOfSides": 3,
+  "rotation": 0,
+}
+            ).addTo(feature_group_e3abd16d7e60e3850ee656839693cb00);
+        
+    
+        var popup_911de9431a824344012f04c81fb35305 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_955ae8107b55e86cebbef440e28670c5 = $(`<div id="html_955ae8107b55e86cebbef440e28670c5" style="width: 100.0%; height: 100.0%;"><b>0222-MS01380_TR12</b><br>Year: <b>2023</b><br>Obs: <b>9</b><br>Plastic: <b>0.0%</b></div>`)[0];
+                popup_911de9431a824344012f04c81fb35305.setContent(html_955ae8107b55e86cebbef440e28670c5);
+            
+        
+
+        regular_polygon_marker_1adb33ede7c47793ca5c4a7cac368d55.bindPopup(popup_911de9431a824344012f04c81fb35305)
+        ;
+
+        
+    
+    
+            regular_polygon_marker_1adb33ede7c47793ca5c4a7cac368d55.bindTooltip(
+                `<div>
+                     🌊 0222-MS01380_TR12 2023: 9 obs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            feature_group_e3abd16d7e60e3850ee656839693cb00.addTo(map_6055fb40374a094253cd387be7564417);
+        
+    
+            var layer_control_f5dc2b992919b527ee8e923bd1debf9b_layers = {
+                base_layers : {
+                    "cartodbpositron" : tile_layer_b1bdaae53cec5e88289633b7904a66e9,
+                },
+                overlays :  {
+                    "\ud83c\udfd6\ufe0f Beach 2020" : feature_group_ec52666e3344ceac858f39a14667dfff,
+                    "\ud83c\udfd6\ufe0f Beach 2021" : feature_group_eec0c9678f73a010e258a834fcd5df5b,
+                    "\ud83c\udfd6\ufe0f Beach 2022" : feature_group_b984fa20c7e1fb0a6e07c530497b003a,
+                    "\ud83c\udfd6\ufe0f Beach 2023" : feature_group_d066f65070424ea5b321d2c906750c2c,
+                    "\ud83c\udf0a Floating 2021" : feature_group_8ca435774161dbe66cb6a691eb0c05bd,
+                    "\ud83c\udf0a Floating 2022" : feature_group_35b34ce0ca4007700a0f0e45ebb66a9d,
+                    "\ud83c\udf0a Floating 2023" : feature_group_e3abd16d7e60e3850ee656839693cb00,
+                },
+            };
+            let layer_control_f5dc2b992919b527ee8e923bd1debf9b = L.control.layers(
+                layer_control_f5dc2b992919b527ee8e923bd1debf9b_layers.base_layers,
+                layer_control_f5dc2b992919b527ee8e923bd1debf9b_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": false,
+  "autoZIndex": true,
+}
+            ).addTo(map_6055fb40374a094253cd387be7564417);
+
+        
+</script>
+</html>
