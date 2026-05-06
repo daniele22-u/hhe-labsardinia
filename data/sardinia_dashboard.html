@@ -322,7 +322,6 @@ function initMap() {
 }
 
 // ── Hazard Grid ────────────────────────────────────────────
-const HCOL = {'Very Low':'#27ae60','Low':'#f1c40f','Medium':'#e67e22','High':'#e74c3c','Very High':'#8e44ad'};
 function hcolor(v) {
   if (v < 0.2) return '#27ae60';
   if (v < 0.4) return '#f1c40f';
@@ -330,21 +329,29 @@ function hcolor(v) {
   if (v < 0.8) return '#e74c3c';
   return '#8e44ad';
 }
+function hclass(v) {
+  if (v < 0.2) return 'Very Low';
+  if (v < 0.4) return 'Low';
+  if (v < 0.6) return 'Medium';
+  if (v < 0.8) return 'High';
+  return 'Very High';
+}
 
-function buildHazardLayer() {
+function buildHazardLayer(year) {
+  if (hazardLayer) hazardLayer.remove();
+  const cells = (D.hazard_by_year && D.hazard_by_year[year]) || [];
   const rects = [];
   const cell = 0.06;
-  D.hazard_grid.forEach(r => {
-    if (!r.hazard_index) return;
+  cells.forEach(([lat, lon, h]) => {
     const rect = L.rectangle(
-      [[r.lat - cell, r.lon - cell],[r.lat + cell, r.lon + cell]],
-      { color: null, fillColor: hcolor(r.hazard_index),
-        fillOpacity: 0.45, weight: 0 }
+      [[lat - cell, lon - cell],[lat + cell, lon + cell]],
+      { color: null, fillColor: hcolor(h), fillOpacity: 0.45, weight: 0 }
     );
-    rect.bindTooltip(`Hazard: ${r.hazard_index.toFixed(2)} (${r.hazard_class})<br>Beach: ${r.beach_score.toFixed(2)} | Float: ${r.float_score.toFixed(2)}`, {sticky:true});
+    rect.bindTooltip(`<b>${year}</b> — Hazard: ${h.toFixed(2)} (${hclass(h)})<br>Lat: ${lat} Lon: ${lon}`, {sticky:true});
     rects.push(rect);
   });
-  hazardLayer = L.layerGroup(rects).addTo(map);
+  hazardLayer = L.layerGroup(rects);
+  if (layerState.hazard) hazardLayer.addTo(map);
 }
 
 // ── Floating stations ──────────────────────────────────────
@@ -458,7 +465,7 @@ function openBeachPopup(st, col, name) {
 // PANEL CHARTS
 // ═══════════════════════════════════════════════════════════
 function initCharts() {
-  buildHazardLayer();
+  buildHazardLayer(2018);
   buildFloatLayer();
 
   // Material donut
@@ -552,6 +559,7 @@ function setYear(yr) {
   updateCurrentGauge(yr);
   updateHeaderStats(yr);
   buildArrowLayer(yr);
+  buildHazardLayer(yr);
   highlightCurrentYear(yr);
 }
 
