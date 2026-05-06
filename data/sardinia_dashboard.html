@@ -23,35 +23,28 @@
     --purple: #8e44ad;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { height: 100%; overflow: hidden; }
-  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; height: 100%; overflow: hidden; display: flex; flex-direction: column; }
+  html, body { height: 100%; overflow: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
+         display: flex; flex-direction: column; }
 
   /* ── HEADER ── */
   #header {
     background: linear-gradient(90deg, var(--panel) 0%, #0a1628 100%);
     border-bottom: 1px solid var(--border);
-    padding: 5px 12px;
-    display: flex; align-items: center; gap: 10px;
-    flex-shrink: 0; z-index: 1000; min-width: 0;
+    padding: 6px 16px;
+    display: flex; align-items: center; gap: 14px;
+    flex-shrink: 0; z-index: 1000;
   }
-  #header h1 { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
-  #header .sub { font-size: 9px; color: var(--muted); }
+  #header h1 { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+  #header .sub { font-size: 9px; color: var(--muted); white-space: nowrap; }
   .stat-chip {
     background: var(--panel2); border: 1px solid var(--border);
-    border-radius: 5px; padding: 3px 8px; text-align: center; flex-shrink: 0;
+    border-radius: 6px; padding: 4px 12px; text-align: center; flex-shrink: 0;
   }
-  .stat-chip .val { font-size: 15px; font-weight: 700; color: var(--accent2); }
-  .stat-chip .lbl { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+  .stat-chip .val { font-size: 17px; font-weight: 700; color: var(--accent2); }
+  .stat-chip .lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
   .chip-danger .val { color: var(--red); }
   .chip-ok    .val { color: var(--green); }
-  #header-right { margin-left: auto; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-  .layer-btn {
-    background: var(--panel2); border: 1px solid var(--border);
-    color: var(--text); padding: 3px 8px; border-radius: 4px;
-    font-size: 9px; cursor: pointer; transition: all .2s; white-space: nowrap;
-  }
-  .layer-btn.active { background: var(--accent); border-color: var(--accent); }
-  .layer-btn:hover { border-color: var(--accent); }
 
   /* ── MAIN ── */
   #main { display: flex; flex: 1; overflow: hidden; min-height: 0; }
@@ -61,68 +54,93 @@
   #map-wrap { flex: 1; position: relative; min-height: 0; min-width: 0; overflow: hidden; }
   .leaflet-container { background: #060e1a !important; }
 
+  /* ── MAP OVERLAY CONTROLS ── */
+  #map-controls {
+    position: absolute; top: 10px; left: 10px; z-index: 900;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .layer-btn {
+    background: rgba(13,26,46,.88); border: 1px solid var(--border);
+    color: var(--text); padding: 5px 11px; border-radius: 5px;
+    font-size: 10px; cursor: pointer; transition: all .2s; white-space: nowrap;
+    backdrop-filter: blur(4px);
+  }
+  .layer-btn.active { background: var(--accent); border-color: var(--accent); }
+  .layer-btn:hover { border-color: var(--accent); }
+
   /* ── RIGHT PANEL ── */
   #panel {
-    width: 290px; flex-shrink: 0;
+    width: 310px; flex-shrink: 0;
     background: var(--panel);
     border-left: 1px solid var(--border);
     display: flex; flex-direction: column;
-    overflow-y: auto; overflow-x: hidden;
+    overflow: hidden;
   }
 
   /* ── YEAR SLIDER ── */
   #year-section {
-    padding: 7px 12px 5px;
+    padding: 10px 14px 8px;
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
   }
-  #year-section h3 { font-size: 9px; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-  #year-display { font-size: 24px; font-weight: 700; color: var(--accent2); line-height: 1; }
+  #year-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  #year-display { font-size: 30px; font-weight: 700; color: var(--accent2); line-height: 1; }
   #period-badge {
-    display: inline-block; font-size: 9px; font-weight: 700;
-    padding: 1px 6px; border-radius: 8px; margin-top: 2px; letter-spacing: 1px;
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px; letter-spacing: 1px;
   }
-  input[type=range] { width: 100%; margin-top: 5px; accent-color: var(--accent2); }
-  .year-labels { display: flex; justify-content: space-between; font-size: 8px; color: var(--muted); margin-top: 1px; }
+  input[type=range] { width: 100%; accent-color: var(--accent2); margin-top: 2px; }
+  .year-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-top: 2px; }
 
-  /* ── PANEL SECTIONS ── */
-  .p-section { padding: 7px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-  .p-section h3 { font-size: 8px; letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; }
-  .chart-wrap { position: relative; height: 90px; }
-  .chart-wrap-sm { position: relative; height: 65px; }
+  /* ── TABS ── */
+  #tab-bar {
+    display: flex; flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel2);
+  }
+  .tab-btn {
+    flex: 1; padding: 7px 0; font-size: 11px; text-align: center;
+    color: var(--muted); cursor: pointer; border: none; background: none;
+    border-bottom: 2px solid transparent; transition: all .2s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+  /* ── TAB CONTENT ── */
+  #tab-content { flex: 1; overflow-y: auto; overflow-x: hidden; }
+  .tab-pane { display: none; padding: 14px; }
+  .tab-pane.active { display: block; }
+  .tab-pane h3 { font-size: 10px; letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+
+  .chart-wrap    { position: relative; height: 160px; }
+  .chart-wrap-sm { position: relative; height: 120px; }
+  .donut-wrap    { position: relative; height: 150px; }
 
   /* Beach litter bars */
-  #beach-bars { display: flex; flex-direction: column; gap: 3px; margin-top: 3px; }
-  .beach-bar-row { display: flex; align-items: center; gap: 5px; }
-  .beach-bar-name { font-size: 8px; color: var(--muted); width: 52px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .beach-bar-outer { flex: 1; background: #0d1a2e; border-radius: 2px; height: 10px; position: relative; overflow: hidden; }
-  .beach-bar-inner { height: 100%; border-radius: 2px; transition: width .4s ease; position: relative; }
-  .beach-bar-val { font-size: 8px; color: var(--text); width: 40px; text-align: right; flex-shrink: 0; }
-  .eu-line {
-    position: absolute; top: 0; bottom: 0; width: 1px;
-    background: rgba(255,255,255,0.3);
-    pointer-events: none;
-  }
+  #beach-bars { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .beach-bar-row { display: flex; align-items: center; gap: 7px; }
+  .beach-bar-name { font-size: 10px; color: var(--muted); width: 64px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .beach-bar-outer { flex: 1; background: #0d1a2e; border-radius: 3px; height: 14px; position: relative; overflow: hidden; }
+  .beach-bar-inner { height: 100%; border-radius: 3px; transition: width .4s ease; }
+  .beach-bar-val { font-size: 10px; color: var(--text); width: 46px; text-align: right; flex-shrink: 0; }
+  .eu-line { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.35); pointer-events: none; }
 
   /* Stats row */
-  .stats-row { display: flex; gap: 5px; margin-top: 5px; }
-  .mini-stat { flex: 1; background: var(--panel2); border: 1px solid var(--border); border-radius: 4px; padding: 4px 6px; text-align: center; }
-  .mini-stat .v { font-size: 13px; font-weight: 700; }
-  .mini-stat .l { font-size: 7px; color: var(--muted); text-transform: uppercase; letter-spacing: .7px; }
+  .stats-row { display: flex; gap: 8px; }
+  .mini-stat { flex: 1; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 8px; text-align: center; }
+  .mini-stat .v { font-size: 18px; font-weight: 700; }
+  .mini-stat .l { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
 
   /* Current gauge */
-  #current-gauge-wrap { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
-  #current-speed-val { font-size: 22px; font-weight: 700; color: var(--accent); }
-  #current-speed-unit { font-size: 9px; color: var(--muted); }
-  #current-direction { font-size: 9px; color: var(--text); margin-top: 1px; }
-  #compass { width: 38px; height: 38px; flex-shrink: 0; }
+  #current-gauge-wrap { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  #current-speed-val { font-size: 36px; font-weight: 700; color: var(--accent); }
+  #current-speed-unit { font-size: 11px; color: var(--muted); }
+  #current-direction { font-size: 10px; color: var(--text); margin-top: 3px; }
+  #compass { width: 54px; height: 54px; flex-shrink: 0; }
 
-  /* Floating material donut */
-  .donut-wrap { position: relative; height: 85px; }
-
-  /* Correlation mini */
-  .corr-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 4px; }
-  .corr-cell { aspect-ratio: 1; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; }
+  /* Correlation */
+  .corr-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 3px; margin-bottom: 8px; }
+  .corr-cell { aspect-ratio: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
 
   /* Popup */
   .custom-popup .leaflet-popup-content-wrapper {
@@ -140,9 +158,9 @@
   .float-tip { background: var(--panel2); border: 1px solid var(--border); color: var(--text); font-size: 10px; padding: 4px 8px; border-radius: 4px; }
 
   /* Scrollbar */
-  #panel::-webkit-scrollbar { width: 4px; }
-  #panel::-webkit-scrollbar-track { background: var(--panel); }
-  #panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  #tab-content::-webkit-scrollbar { width: 4px; }
+  #tab-content::-webkit-scrollbar-track { background: var(--panel); }
+  #tab-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 </style>
 </head>
 <body>
@@ -150,7 +168,7 @@
 <!-- HEADER -->
 <div id="header">
   <div>
-    <div id="header-sub" class="sub">HHE LAB SARDINIA · MSFD D10 · ISPRA 2018–2023</div>
+    <div class="sub">HHE LAB SARDINIA · MSFD D10 · ISPRA 2018–2023</div>
     <h1>🌊 MARINE LITTER HAZARD DASHBOARD</h1>
   </div>
   <div class="stat-chip chip-danger">
@@ -159,99 +177,119 @@
   </div>
   <div class="stat-chip">
     <div class="val" id="hdr-float-obs" style="color:#9b59b6">—</div>
-    <div class="lbl">Floating obs / yr</div>
+    <div class="lbl">Floating obs</div>
   </div>
   <div class="stat-chip chip-ok">
     <div class="val" id="hdr-current">—</div>
-    <div class="lbl">Current speed</div>
+    <div class="lbl">Current cm/s</div>
   </div>
   <div class="stat-chip">
     <div class="val" id="hdr-plastic" style="color:#e74c3c">—</div>
-    <div class="lbl">% Plastic floating</div>
-  </div>
-  <div id="header-right">
-    <button class="layer-btn active" id="btn-hazard" onclick="toggleLayer('hazard')">Hazard Grid</button>
-    <button class="layer-btn active" id="btn-float"  onclick="toggleLayer('float')">Floating Stns</button>
-    <button class="layer-btn active" id="btn-curr"   onclick="toggleLayer('curr')">Currents</button>
+    <div class="lbl">% Plastic</div>
   </div>
 </div>
 
 <!-- MAIN -->
 <div id="main">
+
   <!-- MAP -->
-  <div id="map-wrap"><div id="map"></div></div>
+  <div id="map-wrap">
+    <div id="map"></div>
+    <!-- Layer toggles overlay -->
+    <div id="map-controls">
+      <button class="layer-btn active" id="btn-hazard" onclick="toggleLayer('hazard')">🟧 Hazard Grid</button>
+      <button class="layer-btn active" id="btn-float"  onclick="toggleLayer('float')">🟣 Floating Stns</button>
+      <button class="layer-btn active" id="btn-curr"   onclick="toggleLayer('curr')">🔵 Currents</button>
+    </div>
+  </div>
 
   <!-- RIGHT PANEL -->
   <div id="panel">
 
     <!-- YEAR SLIDER -->
     <div id="year-section">
-      <h3>Time Period</h3>
-      <div id="year-display">2018</div>
-      <div id="period-badge">pre-COVID</div>
+      <div id="year-top">
+        <div id="year-display">2018</div>
+        <div id="period-badge">pre-COVID</div>
+      </div>
       <input type="range" min="2018" max="2023" step="1" value="2018" id="year-slider" oninput="setYear(+this.value)">
       <div class="year-labels">
         <span>2018</span><span>2019</span><span>2020</span><span>2021</span><span>2022</span><span>2023</span>
       </div>
     </div>
 
-    <!-- BEACH LITTER BARS -->
-    <div class="p-section">
-      <h3>🏖 Beach Litter — items/100m</h3>
-      <div id="beach-bars"></div>
-      <div class="stats-row" style="margin-top:8px">
-        <div class="mini-stat">
-          <div class="v" id="stat-surveys" style="color:var(--accent)">—</div>
-          <div class="l">Surveys</div>
-        </div>
-        <div class="mini-stat">
-          <div class="v" id="stat-above-eu" style="color:var(--red)">—</div>
-          <div class="l">Above EU 150</div>
-        </div>
-        <div class="mini-stat">
-          <div class="v" id="stat-mean" style="color:var(--accent2)">—</div>
-          <div class="l">Mean</div>
-        </div>
-      </div>
+    <!-- TAB BAR -->
+    <div id="tab-bar">
+      <button class="tab-btn active" onclick="showTab('beach')">🏖 Beach</button>
+      <button class="tab-btn"        onclick="showTab('float')">🌊 Float</button>
+      <button class="tab-btn"        onclick="showTab('tourism')">🧳 Tourism</button>
+      <button class="tab-btn"        onclick="showTab('currents')">🌀 Currents</button>
     </div>
 
-    <!-- FLOATING LITTER -->
-    <div class="p-section">
-      <h3>🌊 Floating Litter — Material Mix</h3>
-      <div class="donut-wrap"><canvas id="matChart"></canvas></div>
-    </div>
+    <!-- TAB CONTENT -->
+    <div id="tab-content">
 
-    <!-- TOURISM -->
-    <div class="p-section">
-      <h3>🧳 Tourism vs Litter Trend</h3>
-      <div class="chart-wrap"><canvas id="tourismChart"></canvas></div>
-    </div>
-
-    <!-- CURRENT -->
-    <div class="p-section">
-      <h3>🌀 Surface Currents (CMEMS)</h3>
-      <div id="current-gauge-wrap">
-        <div>
-          <div style="display:flex;align-items:baseline;gap:4px">
-            <span id="current-speed-val">—</span>
-            <span id="current-speed-unit">cm/s</span>
+      <!-- BEACH TAB -->
+      <div id="tab-beach" class="tab-pane active">
+        <h3>Beach Litter — items/100m</h3>
+        <div id="beach-bars"></div>
+        <div class="stats-row">
+          <div class="mini-stat">
+            <div class="v" id="stat-surveys" style="color:var(--accent)">—</div>
+            <div class="l">Surveys</div>
           </div>
-          <div id="current-direction">Direction: —</div>
+          <div class="mini-stat">
+            <div class="v" id="stat-above-eu" style="color:var(--red)">—</div>
+            <div class="l">Above EU 150</div>
+          </div>
+          <div class="mini-stat">
+            <div class="v" id="stat-mean" style="color:var(--accent2)">—</div>
+            <div class="l">Mean</div>
+          </div>
         </div>
-        <canvas id="compass" width="48" height="48"></canvas>
       </div>
-      <div class="chart-wrap-sm" style="margin-top:8px"><canvas id="currentChart"></canvas></div>
-    </div>
 
-    <!-- CORRELATION -->
-    <div class="p-section">
-      <h3>📊 Spearman Correlation (2018–2023)</h3>
-      <div class="corr-grid" id="corr-grid"></div>
-      <div style="font-size:9px;color:var(--muted);margin-top:6px">
-        BL=Beach Litter · T=Tourism · CS=Current Speed · FL=Floating
+      <!-- FLOAT TAB -->
+      <div id="tab-float" class="tab-pane">
+        <h3>Floating Litter — Material Mix</h3>
+        <div class="donut-wrap"><canvas id="matChart"></canvas></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:10px">
+          Spearman corr vs current speed: <span style="color:#e74c3c;font-weight:700">r = −0.66</span>
+        </div>
+        <div style="margin-top:12px">
+          <h3>Correlation Matrix</h3>
+          <div class="corr-grid" id="corr-grid"></div>
+          <div style="font-size:9px;color:var(--muted);margin-top:6px">BL=Beach Litter · T=Tourism · CS=Current Speed · FL=Floating</div>
+        </div>
       </div>
-    </div>
 
+      <!-- TOURISM TAB -->
+      <div id="tab-tourism" class="tab-pane">
+        <h3>Tourism vs Litter Trend</h3>
+        <div class="chart-wrap"><canvas id="tourismChart"></canvas></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:10px">
+          Sardinia regional presenze · Pearson r = <span style="color:#f39c12;font-weight:700">−0.44</span><br>
+          <span style="font-size:9px">Confounding: urban beaches get more cleaning services</span>
+        </div>
+      </div>
+
+      <!-- CURRENTS TAB -->
+      <div id="tab-currents" class="tab-pane">
+        <h3>Surface Currents (CMEMS)</h3>
+        <div id="current-gauge-wrap">
+          <canvas id="compass" width="54" height="54"></canvas>
+          <div>
+            <div style="display:flex;align-items:baseline;gap:4px">
+              <span id="current-speed-val">—</span>
+              <span id="current-speed-unit">cm/s</span>
+            </div>
+            <div id="current-direction">Direction: —</div>
+          </div>
+        </div>
+        <div class="chart-wrap-sm"><canvas id="currentChart"></canvas></div>
+      </div>
+
+    </div><!-- /tab-content -->
   </div><!-- /panel -->
 </div><!-- /main -->
 
@@ -283,6 +321,19 @@ let popupCharts = {};
 fetch('dashboard_data.json')
   .then(r => r.json())
   .then(data => { D = data; init(); });
+
+function showTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.textContent.toLowerCase().includes(name.slice(0,3))) b.classList.add('active');
+  });
+  // Resize charts after show (they may have rendered in hidden div)
+  if (matChart) matChart.resize();
+  if (tourismChart) tourismChart.resize();
+  if (currentChart) currentChart.resize();
+}
 
 function init() {
   initMap();
