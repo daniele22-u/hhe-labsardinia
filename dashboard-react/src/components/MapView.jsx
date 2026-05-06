@@ -28,7 +28,7 @@ export default function MapView({ D, year, layers }) {
     return () => { map.remove(); mapRef.current = null; };
   }, []);
 
-  // Beach markers (once data loads)
+  // Beach markers — once
   useEffect(() => {
     if (!mapRef.current || !D) return;
     if (beachRef.current) beachRef.current.remove();
@@ -43,36 +43,36 @@ export default function MapView({ D, year, layers }) {
     beachRef.current = L.layerGroup(markers).addTo(mapRef.current);
   }, [D]);
 
-  // Floating stations
+  // Floating stations — rebuild on D, show/hide on layers.float
   useEffect(() => {
     if (!mapRef.current || !D) return;
     if (floatRef.current) floatRef.current.remove();
     const markers = D.float_stations.map(st => {
       if (!st.lat || !st.lon) return null;
       return L.circleMarker([st.lat, st.lon], {
-        radius: 5, fillColor: '#8e44ad', color: '#fff', weight: 1, fillOpacity: 0.8,
+        radius: 5, fillColor: '#a78bfa', color: '#fff', weight: 1, fillOpacity: 0.8,
       }).bindTooltip(`▲ ${st.station_id} · ${st.n_obs} obs`, { sticky: true });
     }).filter(Boolean);
     floatRef.current = L.layerGroup(markers);
     if (layers.float) floatRef.current.addTo(mapRef.current);
-  }, [D]);
+  }, [D, layers.float]);
 
-  // Hazard grid per year
+  // Hazard grid — rebuild on D + year, show/hide on layers.hazard
   useEffect(() => {
     if (!mapRef.current || !D) return;
     if (hazardRef.current) hazardRef.current.remove();
     const cells = D.hazard_by_year?.[String(year)] || [];
     const cell = 0.06;
     const rects = cells.map(([lat, lon, h]) =>
-      L.rectangle([[lat-cell,lon-cell],[lat+cell,lon+cell]], {
+      L.rectangle([[lat - cell, lon - cell], [lat + cell, lon + cell]], {
         color: null, fillColor: hcolor(h), fillOpacity: 0.45, weight: 0,
       }).bindTooltip(`<b>${year}</b> · Hazard ${h.toFixed(2)} (${hclass(h)})`, { sticky: true })
     );
     hazardRef.current = L.layerGroup(rects);
     if (layers.hazard) hazardRef.current.addTo(mapRef.current);
-  }, [D, year]);
+  }, [D, year, layers.hazard]);
 
-  // Current arrows per year
+  // Current arrows — rebuild on D + year, show/hide on layers.curr
   useEffect(() => {
     if (!mapRef.current || !D) return;
     if (arrowRef.current) arrowRef.current.remove();
@@ -80,23 +80,14 @@ export default function MapView({ D, year, layers }) {
     const lines = arrows.map(([lat, lon, uo, vo]) => {
       const scale = 2.5;
       const dLat = vo * scale * 0.009;
-      const dLon = uo * scale * 0.009 / Math.cos(lat * Math.PI/180);
-      return L.polyline([[lat, lon],[lat+dLat, lon+dLon]], {
-        color: '#1c7ab8', weight: 1.2, opacity: 0.6,
+      const dLon = uo * scale * 0.009 / Math.cos(lat * Math.PI / 180);
+      return L.polyline([[lat, lon], [lat + dLat, lon + dLon]], {
+        color: '#3b9eff', weight: 1.2, opacity: 0.65,
       });
     });
     arrowRef.current = L.layerGroup(lines);
     if (layers.curr) arrowRef.current.addTo(mapRef.current);
-  }, [D, year]);
-
-  // Toggle layers
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (!hazardRef.current || !floatRef.current || !arrowRef.current) return;
-    layers.hazard ? hazardRef.current.addTo(mapRef.current) : hazardRef.current.remove();
-    layers.float  ? floatRef.current.addTo(mapRef.current)  : floatRef.current.remove();
-    layers.curr   ? arrowRef.current.addTo(mapRef.current)  : arrowRef.current.remove();
-  }, [layers]);
+  }, [D, year, layers.curr]);
 
   return <div ref={containerRef} className="map-container" />;
 }
