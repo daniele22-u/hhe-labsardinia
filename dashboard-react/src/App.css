@@ -1,67 +1,339 @@
-/* ── LAYOUT ── */
-.app { display: flex; flex-direction: column; height: 100%; }
-
-.header {
-  display: flex; align-items: center; gap: 14px;
-  padding: 6px 16px; flex-shrink: 0;
-  background: linear-gradient(90deg, var(--panel) 0%, #0a1628 100%);
-  border-bottom: 1px solid var(--border);
+/* ─────────────────────────────────────────
+   LAYOUT — map fills 100%, panels float
+───────────────────────────────────────── */
+.app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
-.header-brand .sub { font-size: 9px; color: var(--muted); letter-spacing: .5px; }
-.header-brand h1  { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); }
 
-.stat-chip { background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; text-align: center; flex-shrink: 0; }
-.stat-chip .val { font-size: 17px; font-weight: 700; color: var(--accent2); line-height: 1.2; }
-.stat-chip .lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
-.chip-red .val { color: var(--red); }
-.chip-grn .val { color: var(--green); }
-.chip-pur .val { color: var(--purple); }
+.map-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.map-bg .leaflet-container { width: 100% !important; height: 100% !important; }
 
-.main { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+/* ─────────────────────────────────────────
+   GLASS MIXIN utility
+───────────────────────────────────────── */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
 
-.map-wrap { flex: 1; position: relative; min-width: 0; overflow: hidden; }
-.map-container { width: 100%; height: 100%; }
+/* ─────────────────────────────────────────
+   TOP BAR
+───────────────────────────────────────── */
+.topbar {
+  position: absolute;
+  top: 16px; left: 16px; right: 16px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.45);
+}
 
-.panel { width: 310px; flex-shrink: 0; background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.brand h1 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.brand .sub {
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 1px;
+}
 
-.year-section { padding: 10px 14px 8px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.year-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
-.year-num { font-size: 30px; font-weight: 700; color: var(--accent2); line-height: 1; }
-.period-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; letter-spacing: 1px; }
-.year-slider { width: 100%; accent-color: var(--accent2); margin-top: 2px; display: block; }
-.year-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-top: 2px; }
+.topbar-chips {
+  display: flex;
+  gap: 8px;
+  margin-left: 6px;
+}
 
-.layer-bar { display: flex; gap: 4px; padding: 6px 10px; border-bottom: 1px solid var(--border); background: var(--panel2); flex-shrink: 0; }
-.layer-btn { flex: 1; padding: 4px 0; border-radius: 4px; border: 1px solid var(--border); background: var(--panel); color: var(--muted); font-size: 10px; cursor: pointer; transition: all .2s; text-align: center; }
-.layer-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-.layer-btn:hover { border-color: var(--accent); color: var(--text); }
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  min-width: 72px;
+}
+.chip .cv {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--accent2);
+}
+.chip .cl {
+  font-size: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+.chip.red  .cv { color: var(--red);    }
+.chip.grn  .cv { color: var(--green);  }
+.chip.pur  .cv { color: var(--purple); }
 
-.tab-bar { display: flex; flex-shrink: 0; background: var(--panel2); border-bottom: 1px solid var(--border); }
-.tab-btn { flex: 1; padding: 7px 0; font-size: 11px; text-align: center; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all .18s; }
+.topbar-right { margin-left: auto; display: flex; gap: 6px; }
+
+/* ─────────────────────────────────────────
+   LAYER PILLS (top-right inside topbar)
+───────────────────────────────────────── */
+.layer-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: rgba(255,255,255,.04);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.layer-pill.on {
+  background: rgba(59,158,255,.18);
+  border-color: rgba(59,158,255,.5);
+  color: var(--accent);
+}
+.layer-pill:hover { border-color: var(--border2); color: var(--text); }
+
+/* ─────────────────────────────────────────
+   BOTTOM YEAR SLIDER
+───────────────────────────────────────── */
+.year-bar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 24px 10px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.45);
+  min-width: 320px;
+}
+
+.year-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  align-self: flex-start;
+}
+.year-num {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--accent2);
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.period-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 20px;
+  letter-spacing: .06em;
+}
+.year-slider-wrap { width: 100%; }
+input[type=range] {
+  width: 100%;
+  height: 3px;
+  accent-color: var(--accent2);
+  cursor: pointer;
+}
+.year-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 3px;
+  letter-spacing: .04em;
+}
+
+/* ─────────────────────────────────────────
+   RIGHT PANEL
+───────────────────────────────────────── */
+.side-panel {
+  position: absolute;
+  top: 76px;
+  right: 16px;
+  bottom: 90px;
+  z-index: 500;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  background: var(--glass2);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.5);
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────
+   TAB BAR
+───────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.tab-btn {
+  flex: 1;
+  padding: 9px 0;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-align: center;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all .18s;
+}
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
 
 .tab-content { flex: 1; overflow-y: auto; overflow-x: hidden; }
-.tab-pane { padding: 14px; }
-.tab-pane h3 { font-size: 10px; letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
-.tab-pane .note { font-size: 10px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
-.tab-pane .note strong { color: var(--red); }
+.tab-pane { padding: 16px; }
+.tab-pane .section-title {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
 
-.beach-bars { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-.bar-row { display: flex; align-items: center; gap: 7px; }
-.bar-label { font-size: 10px; color: var(--muted); width: 64px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bar-outer { flex: 1; background: #0a1628; border-radius: 3px; height: 14px; position: relative; overflow: hidden; }
-.bar-inner { height: 100%; border-radius: 3px; transition: width .4s ease; }
-.bar-eu    { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.35); pointer-events: none; }
-.bar-val   { font-size: 10px; color: var(--text); width: 46px; text-align: right; flex-shrink: 0; }
+/* ─────────────────────────────────────────
+   BEACH BARS
+───────────────────────────────────────── */
+.beach-bars { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.bar-row { display: flex; align-items: center; gap: 8px; }
+.bar-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  width: 58px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,.06);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+  position: relative;
+}
+.bar-fill::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg, transparent 60%, rgba(255,255,255,.2));
+  border-radius: 3px;
+}
+.bar-eu   { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.3); }
+.bar-val  { font-size: 10px; font-weight: 600; color: var(--text); width: 40px; text-align: right; flex-shrink: 0; }
 
-.stats-row { display: flex; gap: 8px; }
-.mini-stat { flex: 1; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 8px; text-align: center; }
-.mini-stat .v { font-size: 18px; font-weight: 700; }
-.mini-stat .l { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+/* ─────────────────────────────────────────
+   STAT CARDS ROW
+───────────────────────────────────────── */
+.stat-cards { display: flex; gap: 6px; }
+.stat-card {
+  flex: 1;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+}
+.stat-card .sv { font-size: 20px; font-weight: 700; line-height: 1.1; }
+.stat-card .sl { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
 
-.corr-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 3px; margin-bottom: 6px; }
-.corr-cell { border-radius: 4px; padding: 6px 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; min-height: 32px; }
+/* ─────────────────────────────────────────
+   NOTE
+───────────────────────────────────────── */
+.note {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 12px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,.03);
+  border-left: 2px solid var(--border2);
+  border-radius: 0 6px 6px 0;
+}
+.note strong { color: var(--red); font-weight: 600; }
+.note .pos { color: var(--accent2); font-weight: 600; }
 
-.recharts-cartesian-axis-tick-value { fill: var(--muted) !important; font-size: 10px; }
-.recharts-default-tooltip { background: var(--panel2) !important; border: 1px solid var(--border) !important; color: var(--text) !important; border-radius: 6px !important; }
+/* ─────────────────────────────────────────
+   CORR MATRIX
+───────────────────────────────────────── */
+.corr-wrap { margin-top: 14px; }
+.corr-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  margin-bottom: 6px;
+}
+.corr-cell {
+  border-radius: 4px;
+  padding: 5px 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  min-height: 28px;
+}
+
+/* ─────────────────────────────────────────
+   RECHARTS OVERRIDES
+───────────────────────────────────────── */
+.recharts-cartesian-axis-tick-value { fill: var(--muted) !important; font-size: 9px; font-family: 'Inter', sans-serif; }
+.recharts-default-tooltip {
+  background: var(--glass2) !important;
+  border: 1px solid var(--border2) !important;
+  color: var(--text) !important;
+  border-radius: 8px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  backdrop-filter: blur(12px) !important;
+}
+.recharts-tooltip-label { color: var(--muted) !important; font-size: 10px !important; margin-bottom: 4px !important; }
