@@ -56,8 +56,9 @@
   #main { display: flex; flex: 1; overflow: hidden; }
 
   /* ── MAP ── */
-  #map-wrap { flex: 1; position: relative; }
-  #map { width: 100%; height: 100%; }
+  /* #map-wrap defined above */
+  #map { width: 100%; height: 100%; min-height: 400px; }
+  #map-wrap { flex: 1; position: relative; min-height: 0; }
   .leaflet-container { background: #060e1a !important; }
 
   /* ── RIGHT PANEL ── */
@@ -278,7 +279,7 @@ let popupCharts = {};
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-fetch('processed/dashboard_data.json')
+fetch('dashboard_data.json')
   .then(r => r.json())
   .then(data => { D = data; init(); });
 
@@ -287,6 +288,7 @@ function init() {
   initCharts();
   buildCorr();
   setYear(2018);
+  setTimeout(() => map.invalidateSize(), 200);
 }
 
 // ═══════════════════════════════════════════════════════════
