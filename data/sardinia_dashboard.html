@@ -462,7 +462,7 @@ function openBeachPopup(st, col, name) {
   const years = [2018,2019,2020,2021,2022,2023];
   const sl = D.sparklines[bid] || {};
   const vals = years.map(y => sl[y] || null);
-  const tVals = years.map(y => { const r = D.tourism_annual.find(d=>+d.year===y); return r ? r.tourists/1e6 : null; });
+  const tVals = years.map(y => { const r = (D.beach_tourism||[]).find(d=>d.beach_id===bid && +d.year===y); return r ? r.tourists/1000 : null; });
 
   const popup = L.popup({className:'custom-popup', maxWidth: 280})
     .setLatLng([st.lat, st.lon])
@@ -472,7 +472,7 @@ function openBeachPopup(st, col, name) {
         <div style="font-size:9px;color:#5a7fa0;margin-bottom:8px">Beach ID: ${bid}</div>
         <div style="font-size:9px;color:#5a7fa0;margin-bottom:4px">items/100m per year</div>
         <div class="popup-chart-wrap"><canvas id="popup-chart-${bid}"></canvas></div>
-        <div style="font-size:9px;color:#5a7fa0;margin-top:8px;margin-bottom:4px">Sardinia tourists (M)</div>
+        <div style="font-size:9px;color:#5a7fa0;margin-top:8px;margin-bottom:4px">Beach visitors (k/yr) — est.</div>
         <div class="popup-chart-wrap"><canvas id="popup-tour-${bid}"></canvas></div>
       </div>
     `)
@@ -506,7 +506,7 @@ function openBeachPopup(st, col, name) {
         scales:{
           x:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'}},
           y:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'},
-             title:{display:true,text:'tourists (M)',color:'#5a7fa0',font:{size:8}}}
+             title:{display:true,text:'visitors (k)',color:'#5a7fa0',font:{size:8}}}
         }
       }
     });
