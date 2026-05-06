@@ -1,0 +1,26 @@
+@import 'leaflet/dist/leaflet.css';
+
+:root {
+  --bg:      #080f1c;
+  --panel:   #0d1a2e;
+  --panel2:  #111f35;
+  --border:  #1e3a5f;
+  --accent:  #1c7ab8;
+  --accent2: #f39c12;
+  --text:    #cde4f5;
+  --muted:   #5a7fa0;
+  --green:   #2ecc71;
+  --red:     #e74c3c;
+  --purple:  #8e44ad;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); }
+body { font-family: 'Segoe UI', system-ui, sans-serif; }
+
+.leaflet-container { background: #060e1a !important; }
+.leaflet-tile { filter: brightness(0.82) saturate(0.65); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--panel); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
