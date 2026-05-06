@@ -165,7 +165,7 @@
     <div class="lbl">Current speed</div>
   </div>
   <div class="stat-chip">
-    <div class="val" id="hdr-plastic" style="color:#e74c3c">75%</div>
+    <div class="val" id="hdr-plastic" style="color:#e74c3c">—</div>
     <div class="lbl">% Plastic floating</div>
   </div>
   <div id="header-right">
@@ -409,8 +409,7 @@ function openBeachPopup(st, col, name) {
   const years = [2018,2019,2020,2021,2022,2023];
   const sl = D.sparklines[bid] || {};
   const vals = years.map(y => sl[y] || null);
-  const touristData = D.tourism_annual.filter(r => r.beach_id === bid).sort((a,b)=>a.year-b.year);
-  const tVals = years.map(y => { const r = touristData.find(d=>d.year==y); return r ? r.tourists/1000 : null; });
+  const tVals = years.map(y => { const r = D.tourism_annual.find(d=>+d.year===y); return r ? r.tourists/1e6 : null; });
 
   const popup = L.popup({className:'custom-popup', maxWidth: 280})
     .setLatLng([st.lat, st.lon])
@@ -420,7 +419,7 @@ function openBeachPopup(st, col, name) {
         <div style="font-size:9px;color:#5a7fa0;margin-bottom:8px">Beach ID: ${bid}</div>
         <div style="font-size:9px;color:#5a7fa0;margin-bottom:4px">items/100m per year</div>
         <div class="popup-chart-wrap"><canvas id="popup-chart-${bid}"></canvas></div>
-        <div style="font-size:9px;color:#5a7fa0;margin-top:8px;margin-bottom:4px">annual tourists (k)</div>
+        <div style="font-size:9px;color:#5a7fa0;margin-top:8px;margin-bottom:4px">Sardinia tourists (M)</div>
         <div class="popup-chart-wrap"><canvas id="popup-tour-${bid}"></canvas></div>
       </div>
     `)
@@ -454,7 +453,7 @@ function openBeachPopup(st, col, name) {
         scales:{
           x:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'}},
           y:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'},
-             title:{display:true,text:'tourists (k)',color:'#5a7fa0',font:{size:8}}}
+             title:{display:true,text:'tourists (M)',color:'#5a7fa0',font:{size:8}}}
         }
       }
     });
@@ -491,7 +490,7 @@ function initCharts() {
       scales:{
         x:{ticks:{color:'#5a7fa0',font:{size:8}},grid:{color:'#1e3a5f33'}},
         y:{ticks:{color:'#e74c3c',font:{size:8}},grid:{color:'#1e3a5f33'},title:{display:true,text:'items/100m',color:'#e74c3c',font:{size:8}}},
-        y2:{position:'right',ticks:{color:'#f39c12',font:{size:8}},grid:{drawOnChartArea:false},title:{display:true,text:'tourists k',color:'#f39c12',font:{size:8}}}
+        y2:{position:'right',ticks:{color:'#f39c12',font:{size:8}},grid:{drawOnChartArea:false},title:{display:true,text:'tourists M',color:'#f39c12',font:{size:8}}}
       }
     }
   });
@@ -616,10 +615,10 @@ function updateTourismChart() {
     const vals = D.beach_annual.filter(d=>+d.year===y).map(d=>d.items_per_100m);
     return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
   });
-  // Total tourists (all beaches)
+  // Regional Sardinia tourists (M)
   const tourists = years.map(y => {
-    const vals = D.tourism_annual.filter(d=>+d.year===y).map(d=>d.tourists/1000);
-    return vals.reduce((a,b)=>a+b,0);
+    const r = D.tourism_annual.find(d=>+d.year===y);
+    return r ? r.tourists/1e6 : null;
   });
   tourismChart.data.datasets[0].data = litter;
   tourismChart.data.datasets[1].data = tourists;
@@ -666,6 +665,17 @@ function updateHeaderStats(yr) {
   const fRows = D.float_monthly.filter(r=>+r.year===yr);
   const fObs  = fRows.reduce((a,b)=>a+b.n_obs,0);
   document.getElementById('hdr-float-obs').textContent = fObs;
+
+  // Plastic % from mat_by_year
+  const mats = D.mat_by_year && D.mat_by_year[String(yr)];
+  if (mats) {
+    const total = Object.values(mats).reduce((a,b)=>a+b,0);
+    const plastic = mats['Artificial polymer'] || 0;
+    const pct = total > 0 ? (plastic/total*100).toFixed(0)+'%' : '—';
+    document.getElementById('hdr-plastic').textContent = pct;
+  } else {
+    document.getElementById('hdr-plastic').textContent = '—';
+  }
 }
 
 function highlightCurrentYear(yr) {
