@@ -77,12 +77,14 @@ export default function MapView({ D, year, layers }) {
     if (!mapRef.current || !D) return;
     if (arrowRef.current) arrowRef.current.remove();
     const arrows = D.annual_arrows?.[String(year)] || [];
+    // Normalize to fixed display length (0.05°) keeping direction
+    const ARROW_LEN = 0.05;
     const lines = arrows.map(([lat, lon, uo, vo]) => {
-      const scale = 2.5;
-      const dLat = vo * scale * 0.009;
-      const dLon = uo * scale * 0.009 / Math.cos(lat * Math.PI / 180);
+      const mag = Math.sqrt(uo*uo + vo*vo) || 1e-9;
+      const dLat = (vo / mag) * ARROW_LEN;
+      const dLon = (uo / mag) * ARROW_LEN / Math.cos(lat * Math.PI / 180);
       return L.polyline([[lat, lon], [lat + dLat, lon + dLon]], {
-        color: '#3b9eff', weight: 1.2, opacity: 0.65,
+        color: '#3b9eff', weight: 1.8, opacity: 0.7,
       });
     });
     arrowRef.current = L.layerGroup(lines);
