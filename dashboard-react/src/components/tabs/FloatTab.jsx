@@ -40,7 +40,7 @@ export default function FloatTab({ D, year }) {
             {pieData.map((_,i) => <Cell key={i} fill={COLORS[i%COLORS.length]} />)}
           </Pie>
           <Tooltip formatter={(v)=>[`${v} obs`,'']} contentStyle={{background:'var(--glass2)',border:'1px solid var(--border2)',color:'var(--text)',borderRadius:8,fontSize:11}} />
-          <Legend iconSize={7} wrapperStyle={{fontSize:9,color:'var(--muted)'}}/>
+          <Legend iconSize={7} wrapperStyle={{fontSize:9,color:'var(--muted)', paddingTop:'10px'}}/>
         </PieChart>
       </ResponsiveContainer>
       <div className="note">

@@ -36,26 +36,21 @@ export default function MapView({ D, year, layers }) {
       if (!st.lat || !st.lon) return null;
       const col = D.beach_colors[st.beach_id] || '#f39c12';
       const name = D.beach_names[st.beach_id] || st.beach_id;
+      const history = D.beach_annual.filter(d => d.beach_id === st.beach_id).sort((a,b)=>a.year-b.year).map(d => `<div style="display:flex;justify-content:space-between;"><span>${d.year}:</span> <b>${d.items_per_100m}</b></div>`).join('');
+      const tooltipHTML = `
+        <div style="font-family:Inter,sans-serif;font-size:11px;min-width:100px;">
+          <b style="color:${col};font-size:12px;display:block;border-bottom:1px solid var(--border2);padding-bottom:4px;margin-bottom:4px;">${name}</b>
+          ${history || 'No data'}
+        </div>
+      `;
       return L.circleMarker([st.lat, st.lon], {
         radius: 8, fillColor: col, color: '#fff', weight: 2, fillOpacity: 0.9,
-      }).bindTooltip(`<b style="color:${col}">${name}</b>`, { sticky: true });
+      }).bindTooltip(tooltipHTML, { sticky: true });
     }).filter(Boolean);
     beachRef.current = L.layerGroup(markers).addTo(mapRef.current);
   }, [D]);
 
-  // Floating stations — rebuild on D, show/hide on layers.float
-  useEffect(() => {
-    if (!mapRef.current || !D) return;
-    if (floatRef.current) floatRef.current.remove();
-    const markers = D.float_stations.map(st => {
-      if (!st.lat || !st.lon) return null;
-      return L.circleMarker([st.lat, st.lon], {
-        radius: 5, fillColor: '#a78bfa', color: '#fff', weight: 1, fillOpacity: 0.8,
-      }).bindTooltip(`▲ ${st.station_id} · ${st.n_obs} obs`, { sticky: true });
-    }).filter(Boolean);
-    floatRef.current = L.layerGroup(markers);
-    if (layers.float) floatRef.current.addTo(mapRef.current);
-  }, [D, layers.float]);
+
 
   // Hazard grid — rebuild on D + year, show/hide on layers.hazard
   useEffect(() => {
