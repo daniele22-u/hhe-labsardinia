@@ -33,7 +33,7 @@ export default function App() {
   useEffect(() => {
     fetch('/dashboard_data.json').then(r => r.json()).then(data => {
       setD(data);
-      setTimeout(() => setAppStarted(true), 1200);
+      setTimeout(() => setAppStarted(true), 5000);
     });
   }, []);
 
