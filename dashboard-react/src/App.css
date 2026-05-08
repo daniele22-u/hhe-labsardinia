@@ -180,9 +180,9 @@ input[type=range] {
 ───────────────────────────────────────── */
 .side-panel {
   position: absolute;
-  top: 86px;
+  top: 165px;
   right: 16px;
-  bottom: 90px;
+  bottom: 20px;
   z-index: 500;
   width: 300px;
   display: flex;
@@ -541,4 +541,76 @@ input[type=range] {
   .hazard-legend {
     bottom: calc(40vh + 80px);
   }
+}
+
+/* ─── Splash fade-out ─── */
+.splash-screen {
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.splash-screen.fading {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* ─── Chip: extend for sparkline + badges ─── */
+.chip {
+  min-width: 88px;
+  padding: 5px 10px 6px;
+}
+
+/* ─── Best / Worst year badges ─── */
+.bw-row {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.bw-badge {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 10px;
+  letter-spacing: .04em;
+}
+.bw-badge.best  { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.bw-badge.worst { background: rgba(248,113,113,0.15); color: var(--red);   border: 1px solid rgba(248,113,113,0.3); }
+
+/* ─── Insights Panel (inside side-panel) ─── */
+.insights-panel {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding: 10px 14px;
+  background: rgba(59,158,255,.03);
+}
+.insights-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.insights-panel p {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.insights-panel p b { color: var(--text); }
+
+/* ─── Insights box inside modal ─── */
+.insights-box {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.insights-box .insights-title { margin-bottom: 4px; }
+.insights-box p b { color: var(--accent); }
+
+/* ─── Smooth theme transition ─── */
+.app, .topbar, .side-panel, .year-bar, .hazard-legend {
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
