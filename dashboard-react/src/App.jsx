@@ -17,7 +17,9 @@ const TABS = [
 
 const LAYERS = [
   { key: 'hazard', label: '⬛ Hazard' },
-  { key: 'curr', label: '〜 Currents' },
+  { key: 'curr',   label: '〜 Currents' },
+  { key: 'seafloor', label: '🪸 Seafloor' },
+  { key: 'comuni',   label: '🗺 Segments' },
 ];
 
 /* ── Animated counter hook ── */
@@ -70,7 +72,7 @@ export default function App() {
   const [D, setD] = useState(null);
   const [year, setYear] = useState(2018);
   const [tab, setTab] = useState('beach');
-  const [layers, setLayers] = useState({ hazard: true, curr: true });
+  const [layers, setLayers] = useState({ hazard: true, curr: true, seafloor: false, comuni: false });
   const [isPlaying, setIsPlaying] = useState(false);
   const [splashFading, setSplashFading] = useState(false);
   const [appStarted, setAppStarted] = useState(false);

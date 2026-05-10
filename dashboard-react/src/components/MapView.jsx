@@ -9,13 +9,24 @@ L.Icon.Default.mergeOptions({
   shadowUrl:     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+// Seafloor colour: yellow→red
+function sfcolor(h) {
+  if (h < 0.2) return '#ffffb2';
+  if (h < 0.4) return '#fecc5c';
+  if (h < 0.6) return '#fd8d3c';
+  if (h < 0.8) return '#f03b20';
+  return '#bd0026';
+}
+
 export default function MapView({ D, year, layers }) {
-  const containerRef = useRef(null);
-  const mapRef       = useRef(null);
-  const hazardRef    = useRef(null);
-  const floatRef     = useRef(null);
-  const arrowRef     = useRef(null);
-  const beachRef     = useRef(null);
+  const containerRef  = useRef(null);
+  const mapRef        = useRef(null);
+  const hazardRef     = useRef(null);
+  const floatRef      = useRef(null);
+  const arrowRef      = useRef(null);
+  const beachRef      = useRef(null);
+  const seafloorRef   = useRef(null);
+  const comuniRef     = useRef(null);
 
   // Init map once
   useEffect(() => {
@@ -85,6 +96,43 @@ export default function MapView({ D, year, layers }) {
     arrowRef.current = L.layerGroup(lines);
     if (layers.curr) arrowRef.current.addTo(mapRef.current);
   }, [D, year, layers.curr]);
+
+  // Seafloor grid — rebuild on D + year, show/hide on layers.seafloor
+  useEffect(() => {
+    if (!mapRef.current || !D) return;
+    if (seafloorRef.current) seafloorRef.current.remove();
+    const cells = D.seafloor_by_year?.[String(year)] || [];
+    const cell = 0.06;
+    const rects = cells.map(([lat, lon, h]) =>
+      L.rectangle([[lat - cell, lon - cell], [lat + cell, lon + cell]], {
+        color: null, fillColor: sfcolor(h), fillOpacity: 0.5, weight: 0,
+      }).bindTooltip(`<b>${year}</b> · Seafloor density ${h.toFixed(2)}`, { sticky: true })
+    );
+    seafloorRef.current = L.layerGroup(rects);
+    if (layers.seafloor) seafloorRef.current.addTo(mapRef.current);
+  }, [D, year, layers.seafloor]);
+
+  // Comuni segments — rebuild on D + year, show/hide on layers.comuni
+  useEffect(() => {
+    if (!mapRef.current || !D) return;
+    if (comuniRef.current) comuniRef.current.remove();
+    const gj = D.comuni_hazard_geojson;
+    if (!gj) return;
+    const polygons = [];
+    gj.features.forEach(ft => {
+      const h = ft.properties.hazard_by_year?.[String(year)];
+      const color = h != null ? hcolor(h) : '#1a2a3a';
+      const poly = L.geoJSON(ft, {
+        style: { color: '#ffffff22', weight: 0.5, fillColor: color, fillOpacity: 0.55 },
+      }).bindTooltip(
+        `<b>${ft.properties.name}</b><br>Hazard ${h != null ? h.toFixed(2) + ' (' + (h<.2?'Very Low':h<.4?'Low':h<.6?'Medium':h<.8?'High':'Very High') + ')' : 'no data'}`,
+        { sticky: true }
+      );
+      polygons.push(poly);
+    });
+    comuniRef.current = L.layerGroup(polygons);
+    if (layers.comuni) comuniRef.current.addTo(mapRef.current);
+  }, [D, year, layers.comuni]);
 
   return <div ref={containerRef} className="map-container" />;
 }
