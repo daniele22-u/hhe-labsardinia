@@ -125,22 +125,54 @@ if not seafloor_csv.exists():
     print("Generating SYNTHETIC placeholder data for development…")
     print("=" * 60)
 
-    # Synthetic data for dashboard development
+    # Use REAL D8 station coordinates as proxy locations for synthetic litter data
+    # (D8 sediment monitoring uses same offshore sampling network as D10 seafloor)
+    d8_dir = ROOT / 'Labenv' / 'Modulo_D8_sedimenti_Med_Occ_2018-2023'
+    d8_stations = []
+    for f in sorted(d8_dir.glob('*.xlsx')):
+        try:
+            df_s = pd.ExcelFile(f).parse('Stazioni')
+            df_s['source_file'] = f.name
+            d8_stations.append(df_s[['NationalStationID','Latitude','Longitude','SeaDepth']].dropna(subset=['Latitude','Longitude']))
+        except Exception as e:
+            print(f"  Warning: {f.name}: {e}")
+
+    if d8_stations:
+        all_stations = pd.concat(d8_stations).drop_duplicates('NationalStationID').reset_index(drop=True)
+        print(f"  Real D8 stations loaded: {len(all_stations)}")
+    else:
+        all_stations = None
+
     rng = np.random.default_rng(42)
     rows = []
     for yr in range(2020, 2024):
-        for _ in range(20):
-            # Bias: higher density near west coast and Gulf of Cagliari
-            lat = rng.uniform(38.9, 41.2)
-            lon = rng.uniform(8.2, 9.8)
-            # West coast + south coast heavier
-            density_base = 80 + 40*(9.2-lon) + 30*(39.5-lat if lat<39.5 else 0)
-            density = max(0, density_base + rng.normal(0, 20))
-            rows.append({'lat': lat, 'lon': lon, 'n_items': int(density * 0.5),
-                         'weight_kg': density * 0.2, 'swept_area_km2': 0.5,
-                         'density': density, 'year': yr, 'survey_id': f'SYN_{yr}_{_}'})
+        if all_stations is not None:
+            base_pts = all_stations
+        else:
+            # Fallback: random grid
+            base_pts = pd.DataFrame({'Latitude': rng.uniform(38.9, 41.2, 24),
+                                     'Longitude': rng.uniform(8.2, 9.8, 24),
+                                     'SeaDepth': rng.uniform(20, 100, 24)})
+        for _, row_s in base_pts.iterrows():
+            lat, lon = row_s['Latitude'], row_s['Longitude']
+            depth = row_s.get('SeaDepth', 50) or 50
+            # Ecology-based heuristic:
+            # Higher litter near west coast (upwelling), near Cagliari/Oristano gulfs
+            # Deeper = less (>200m very low; canyon transport)
+            coast_effect  = max(0, (9.4 - lon)) * 30   # west coast bias
+            gulf_effect   = max(0, (39.6 - abs(lat - 39.2))) * 20  # Gulf of Cagliari
+            depth_penalty = max(0, (depth - 50) * 0.3)
+            density_base  = 60 + coast_effect + gulf_effect - depth_penalty
+            density = max(0, density_base + rng.normal(0, 15))
+            rows.append({'lat': lat, 'lon': lon,
+                         'n_items': int(density * 0.5),
+                         'weight_kg': density * 0.15,
+                         'swept_area_km2': 0.5,
+                         'density': density,
+                         'year': yr,
+                         'survey_id': f'SYN_{yr}_{row_s.get("NationalStationID","S")}'})
     df = pd.DataFrame(rows)
-    print(f"  Synthetic records: {len(df)}")
+    print(f"  Synthetic records using real coords: {len(df)}")
 else:
     df = load_seafloor(seafloor_csv)
     print(f"  Loaded {len(df)} seafloor records")
