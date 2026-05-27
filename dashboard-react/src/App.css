@@ -91,6 +91,8 @@
 .chip.red  .cv { color: var(--red);    }
 .chip.grn  .cv { color: var(--green);  }
 .chip.pur  .cv { color: var(--purple); }
+.chip.org  .cv { color: #f97316; }
+.chip.comp .cv { color: #06b6d4; }
 
 .topbar-right { margin-left: auto; display: flex; gap: 6px; }
 
@@ -527,7 +529,17 @@ input[type=range] {
   height: 8px;
   width: 120px;
   border-radius: 4px;
-  background: linear-gradient(to right, #4ade80, #facc15, #f87171, #991b1b);
+  /* 8 hard color blocks */
+  background: linear-gradient(to right, 
+    #2ecc71 0% 12.5%, 
+    #a4de02 12.5% 25%, 
+    #f1c40f 25% 37.5%, 
+    #f39c12 37.5% 50%, 
+    #e67e22 50% 62.5%, 
+    #e74c3c 62.5% 75%, 
+    #c0392b 75% 87.5%, 
+    #8e44ad 87.5% 100%
+  );
 }
 .leg-labels {
   display: flex;
@@ -613,4 +625,72 @@ input[type=range] {
 /* ─── Smooth theme transition ─── */
 .app, .topbar, .side-panel, .year-bar, .hazard-legend {
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* ─── Modal scoring breakdown ─── */
+.modal-section-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+.modal-scoring-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.modal-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.modal-score-label {
+  font-size: 11px;
+  color: var(--text);
+}
+.modal-score-weight {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent2);
+}
+
+/* ─── Bio tab: inline info card ─── */
+.bio-info-card {
+  background: rgba(59,158,255,0.06);
+  border: 1px solid rgba(59,158,255,0.2);
+  border-left: 3px solid rgba(59,158,255,0.5);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+}
+.bio-info-title {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.bio-info-body {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.bio-info-body strong { color: var(--text); }
+.bio-info-body em { color: var(--accent2); font-style: italic; }
+
+/* ─── Bio tab: chart annotation text ─── */
+.bio-sub {
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.5;
+  opacity: 0.8;
+  margin-bottom: 2px;
 }

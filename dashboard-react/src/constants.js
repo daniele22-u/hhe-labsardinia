@@ -23,11 +23,15 @@ export const CORR = [
 export const CORR_LABELS = ['BL','T','CS','FL'];
 
 export function hcolor(h) {
-  if (h < 0.2) return '#2ecc71';
-  if (h < 0.4) return '#f1c40f';
-  if (h < 0.6) return '#f39c12';
-  if (h < 0.8) return '#e74c3c';
-  return '#8e44ad';
+  // Scala a "stacchi netti" (discrete) con 8 step per evidenziare differenze minime
+  if (h < 0.2) return '#2ecc71'; // Green
+  if (h < 0.3) return '#a4de02'; // Lime
+  if (h < 0.4) return '#f1c40f'; // Yellow
+  if (h < 0.5) return '#f39c12'; // Orange
+  if (h < 0.6) return '#e67e22'; // Dark Orange
+  if (h < 0.7) return '#e74c3c'; // Red
+  if (h < 0.8) return '#c0392b'; // Dark Red
+  return '#8e44ad';              // Purple
 }
 export function hclass(h) {
   if (h < 0.2) return 'Very Low';

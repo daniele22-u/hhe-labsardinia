@@ -6,6 +6,7 @@ import BeachTab from './components/tabs/BeachTab';
 import FloatTab from './components/tabs/FloatTab';
 import TourismTab from './components/tabs/TourismTab';
 import CurrentsTab from './components/tabs/CurrentsTab';
+import BiologicalTab from './components/tabs/BiologicalTab';
 import { PERIOD_MAP, PERIOD_COLORS, YEARS } from './constants';
 
 const TABS = [
@@ -13,13 +14,16 @@ const TABS = [
   { id: 'float', label: '🌊 Float' },
   { id: 'tourism', label: '🧳 Tourism' },
   { id: 'currents', label: '🌀 Currents' },
+  { id: 'biological', label: '🦎 Bio' },
 ];
 
 const LAYERS = [
   { key: 'hazard', label: '⬛ Hazard' },
-  { key: 'curr',   label: '〜 Currents' },
-  { key: 'seafloor', label: '🪸 Seafloor' },
-  { key: 'comuni',   label: '🗺 Segments' },
+  { key: 'curr', label: '〜 Currents' },
+  // seafloor layer removed: data not available for the full 2018-2023 period
+  { key: 'comuni', label: '🗺 Segments' },
+  { key: 'micro', label: '🔬 Micro' },
+  { key: 'lisa', label: '🔴 LISA' },
 ];
 
 /* ── Animated counter hook ── */
@@ -58,7 +62,7 @@ function Sparkline({ values, color }) {
   const range = max - min || 1;
   const pts = values.map((v, i) => {
     const x = (i / (values.length - 1)) * w;
-    const y = h - ((( v ?? min) - min) / range) * h;
+    const y = h - (((v ?? min) - min) / range) * h;
     return `${x},${y}`;
   }).join(' ');
   return (
@@ -72,7 +76,7 @@ export default function App() {
   const [D, setD] = useState(null);
   const [year, setYear] = useState(2018);
   const [tab, setTab] = useState('beach');
-  const [layers, setLayers] = useState({ hazard: true, curr: true, seafloor: false, comuni: false });
+  const [layers, setLayers] = useState({ hazard: true, curr: true, seafloor: false, comuni: false, micro: false, lisa: false }); // seafloor kept in state for MapView compat but no pill
   const [isPlaying, setIsPlaying] = useState(false);
   const [splashFading, setSplashFading] = useState(false);
   const [appStarted, setAppStarted] = useState(false);
@@ -116,7 +120,7 @@ export default function App() {
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      document.documentElement.requestFullscreen().catch(() => { });
     } else {
       document.exitFullscreen();
     }
@@ -172,10 +176,24 @@ export default function App() {
   const plastTrend = getTrend(currPlast, getRawPlastic(year - 1), true);
   const plasticPctStr = currPlast ? currPlast.toFixed(0) + '%' : '—';
 
+  // ── Bio score ──
+  const getRawBioScore = useCallback(y => {
+    return D?.biological_impact_by_year?.[String(y)]?.score ?? null;
+  }, [D]);
+
+  // ── Microplastics mean ──
+  const getRawMicroMean = useCallback(y => {
+    const rows = D?.microplastics_by_year?.[String(y)];
+    if (!rows || !rows.length) return null;
+    return rows.reduce((a, r) => a + r[2], 0) / rows.length;
+  }, [D]);
+
   // ── Sparkline data (all years) ──
   const litterSpark = YEARS.map(y => getRawMaxLitter(y));
   const currSpark = YEARS.map(y => getRawCurr(y));
   const plastSpark = YEARS.map(y => getRawPlastic(y));
+  const bioSpark = YEARS.map(y => getRawBioScore(y));
+  const microSpark = YEARS.map(y => getRawMicroMean(y));
 
   // ── Best / Worst year ──
   const getBestWorst = (vals, reverseGood) => {
@@ -188,6 +206,35 @@ export default function App() {
   const litterBW = getBestWorst(litterSpark, true);
   const currBW = getBestWorst(currSpark, false);
   const plastBW = getBestWorst(plastSpark, true);
+  const bioBW = getBestWorst(bioSpark, true);
+  const microBW = getBestWorst(microSpark, true);
+
+  // ── Bio impact chip values ──
+  const currBio = getRawBioScore(year);
+  const bioTrend = getTrend(currBio, getRawBioScore(year - 1), true);
+  const bioScoreStr = currBio != null ? (currBio * 100).toFixed(1) + '‱' : '—';
+
+  // ── Combined Hazard Score (4-component) ──
+  // Normalise each component to [0,1] then weight-average
+  const getCompositeHazard = useCallback(y => {
+    const litter = getRawMaxLitter(y);  // items/100m, max ~4000
+    const curr_ = getRawCurr(y);       // cm/s ~0-200
+    const plast = getRawPlastic(y);    // %
+    const bio = getRawBioScore(y);   // 0-1
+    if (litter == null && curr_ == null && plast == null && bio == null) return null;
+    const normL = litter != null ? Math.min(litter / 4000, 1) : 0.5;
+    const normC = curr_ != null ? Math.min(curr_ / 200, 1) : 0.5;
+    const normP = plast != null ? Math.min(plast / 100, 1) : 0.5;
+    const normB = bio != null ? Math.min(bio / 0.2, 1) : 0.5; // score max ~0.2 in data
+    // Weights: litter 35%, plastic 25%, currents 20%, bio 20%
+    return (normL * 0.35 + normP * 0.25 + normC * 0.20 + normB * 0.20);
+  }, [getRawMaxLitter, getRawCurr, getRawPlastic, getRawBioScore]);
+
+  const currComposite = getCompositeHazard(year);
+  const compositeStr = currComposite != null ? (currComposite * 100).toFixed(0) + '%' : '—';
+  const compositeTrend = getTrend(currComposite, getCompositeHazard(year - 1), true);
+  const compositeSpark = YEARS.map(y => getCompositeHazard(y));
+  const compositeBW = getBestWorst(compositeSpark, true);
 
   // ── Auto insights ──
   const insights = D ? (() => {
@@ -198,6 +245,10 @@ export default function App() {
     if (pw) { const pv = getRawPlastic(pw); lines.push(`🧴 Plastica massima nel <b>${pw}</b>: ${pv?.toFixed(0)}%.`); }
     const cw = currBW.worst;
     if (cw) { const cv = getRawCurr(cw); lines.push(`🌊 Correnti più intense nel <b>${cw}</b>: ${cv?.toFixed(1)} cm/s.`); }
+    const bw = bioBW.worst;
+    if (bw) { const bv = getRawBioScore(bw); lines.push(`🦎 Impatto biologico max nel <b>${bw}</b>: score ${(bv * 100).toFixed(1)}‱.`); }
+    const mw = microBW.worst;
+    if (mw) { const mv = getRawMicroMean(mw); lines.push(`🔬 Microplastiche più dense nel <b>${mw}</b>: media ${mv?.toFixed(3)}.`); }
     const l18 = getRawMaxLitter(2018), l23 = getRawMaxLitter(2023);
     if (l18 && l23) {
       const delta = ((l23 - l18) / l18 * 100).toFixed(0);
@@ -210,6 +261,8 @@ export default function App() {
   const animLitter = useCountUp(maxLitterStr);
   const animCms = useCountUp(currentCmsStr);
   const animPlast = useCountUp(plasticPctStr);
+  const animBio = useCountUp(bioScoreStr);
+  const animComposite = useCountUp(compositeStr);
 
   const period = PERIOD_MAP[year];
   const periodColor = PERIOD_COLORS[period];
@@ -230,17 +283,46 @@ export default function App() {
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h2>🌊 Sardinia HHE Lab</h2>
-            <p style={{marginTop:10, lineHeight:1.5, color:'var(--muted)'}}>
-              Questa dashboard analizza l'Hazard da Marine Litter sulle coste della Sardegna (2018-2023), in accordo con la <b>MSFD D10</b>.
+            <p style={{ marginTop: 10, lineHeight: 1.5, color: 'var(--muted)' }}>
+              Questa dashboard analizza l'<b>Hazard da Marine Litter</b> sulle coste della Sardegna (2018–2023), in accordo con la <b>MSFD D10</b>.
             </p>
-            <p style={{marginTop:10, lineHeight:1.5, color:'var(--muted)'}}>
-              I dati mostrano l'interazione tra le correnti marine, l'accumulo di rifiuti sulle spiagge e la pressione turistica.
+
+            <div className="modal-section-title">📊 Componenti dello Scoring</div>
+            <div className="modal-scoring-grid">
+              <div className="modal-score-row">
+                <span className="modal-score-label">🏖 Beach Litter</span>
+                <span className="modal-score-weight">35%</span>
+              </div>
+              <div className="modal-score-row">
+                <span className="modal-score-label">🧴 % Plastica</span>
+                <span className="modal-score-weight">25%</span>
+              </div>
+              <div className="modal-score-row">
+                <span className="modal-score-label">🌀 Correnti</span>
+                <span className="modal-score-weight">20%</span>
+              </div>
+              <div className="modal-score-row">
+                <span className="modal-score-label">🦎 Bio Score</span>
+                <span className="modal-score-weight">20%</span>
+              </div>
+            </div>
+
+            <div className="modal-section-title" style={{ marginTop: 12 }}>🦎 Impatto Biologico</div>
+            <p style={{ marginTop: 6, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}>
+              Il <b>Bio Score</b> è un proxy di impatto biologico calcolato come:
             </p>
+            <p style={{ marginTop: 4, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}>
+              <b>Score = (ENT + ING) / N_max</b> · combina eventi di <b>entanglement</b> (ingarbugliamento) e <b>ingestione</b> di plastica rilevati su tartarughe marine (<i>Caretta caretta</i>, ~99%) dai dati <b>CNR-IAS/Oristano</b> (2018–2023, 83+82 eventi).
+            </p>
+            <p style={{ marginTop: 4, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}>
+              Il picco è nel <b>2021</b>. Il layer <b>🔬 Micro</b> mostra la griglia IDW di microplastiche derivata da 7.913 campionamenti trawl (336 celle/anno).
+            </p>
+
             {insights.length > 0 && (
-              <div className="insights-box" style={{marginTop:14}}>
-                <div className="insights-title">📊 Auto-Insights</div>
+              <div className="insights-box" style={{ marginTop: 12 }}>
+                <div className="insights-title">📈 Auto-Insights</div>
                 {insights.map((s, i) => (
-                  <p key={i} dangerouslySetInnerHTML={{ __html: s }} style={{marginTop:6, fontSize:11, lineHeight:1.5, color:'var(--text)'}} />
+                  <p key={i} dangerouslySetInnerHTML={{ __html: s }} style={{ marginTop: 6, fontSize: 11, lineHeight: 1.5, color: 'var(--text)' }} />
                 ))}
               </div>
             )}
@@ -251,7 +333,11 @@ export default function App() {
 
       {/* MAP */}
       <div className="map-bg">
-        <MapView D={D} year={year} layers={layers} />
+        <MapView D={D} year={year} layers={layers} compositeFactors={D ? {
+          normP: currPlast != null ? Math.min(currPlast / 100, 1) : 0.5,
+          normC: currCms  != null ? Math.min(currCms  / 200, 1) : 0.5,
+          normB: currBio  != null ? Math.min(currBio  / 0.2, 1) : 0.5,
+        } : null} />
       </div>
 
       {/* HAZARD LEGEND */}
@@ -263,7 +349,7 @@ export default function App() {
 
       {/* TOP BAR */}
       <div className="topbar">
-        <div className="brand" style={{display:'flex', alignItems:'center', gap: 6}}>
+        <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <div>
             <div className="sub">HHE LAB SARDINIA · MSFD D10</div>
             <h1>🌊 Marine Litter Hazard</h1>
@@ -276,7 +362,7 @@ export default function App() {
           <div className="chip red">
             <span className="cv">{animLitter}</span>
             <span className="cl">Max items/100m</span>
-            {litterTrend && <span className="trend" style={{color:litterTrend.col}}>{litterTrend.sym} {litterTrend.pct}</span>}
+            {litterTrend && <span className="trend" style={{ color: litterTrend.col }}>{litterTrend.sym} {litterTrend.pct}</span>}
             <Sparkline values={litterSpark} color="var(--red)" />
             <div className="bw-row">
               {litterBW.best && <span className="bw-badge best">↓{litterBW.best}</span>}
@@ -287,7 +373,7 @@ export default function App() {
           <div className="chip grn">
             <span className="cv">{animCms}</span>
             <span className="cl">Current cm/s</span>
-            {cmsTrend && <span className="trend" style={{color:cmsTrend.col}}>{cmsTrend.sym} {cmsTrend.pct}</span>}
+            {cmsTrend && <span className="trend" style={{ color: cmsTrend.col }}>{cmsTrend.sym} {cmsTrend.pct}</span>}
             <Sparkline values={currSpark} color="var(--green)" />
             <div className="bw-row">
               {currBW.best && <span className="bw-badge best">↑{currBW.best}</span>}
@@ -298,11 +384,33 @@ export default function App() {
           <div className="chip pur">
             <span className="cv">{animPlast}</span>
             <span className="cl">% Plastic</span>
-            {plastTrend && <span className="trend" style={{color:plastTrend.col}}>{plastTrend.sym} {plastTrend.pct}</span>}
+            {plastTrend && <span className="trend" style={{ color: plastTrend.col }}>{plastTrend.sym} {plastTrend.pct}</span>}
             <Sparkline values={plastSpark} color="var(--purple)" />
             <div className="bw-row">
               {plastBW.best && <span className="bw-badge best">↓{plastBW.best}</span>}
               {plastBW.worst && <span className="bw-badge worst">↑{plastBW.worst}</span>}
+            </div>
+          </div>
+          {/* Bio impact chip */}
+          <div className="chip org">
+            <span className="cv">{animBio}</span>
+            <span className="cl">Bio Score</span>
+            {bioTrend && <span className="trend" style={{ color: bioTrend.col }}>{bioTrend.sym} {bioTrend.pct}</span>}
+            <Sparkline values={bioSpark} color="#f97316" />
+            <div className="bw-row">
+              {bioBW.best && <span className="bw-badge best">↓{bioBW.best}</span>}
+              {bioBW.worst && <span className="bw-badge worst">↑{bioBW.worst}</span>}
+            </div>
+          </div>
+          {/* Composite Hazard chip */}
+          <div className="chip comp">
+            <span className="cv">{animComposite}</span>
+            <span className="cl">Composite</span>
+            {compositeTrend && <span className="trend" style={{ color: compositeTrend.col }}>{compositeTrend.sym} {compositeTrend.pct}</span>}
+            <Sparkline values={compositeSpark} color="#06b6d4" />
+            <div className="bw-row">
+              {compositeBW.best && <span className="bw-badge best">↓{compositeBW.best}</span>}
+              {compositeBW.worst && <span className="bw-badge worst">↑{compositeBW.worst}</span>}
             </div>
           </div>
         </div>
@@ -317,7 +425,7 @@ export default function App() {
               {label}
             </button>
           ))}
-          <button className="layer-pill" onClick={toggleFullscreen} title="A Tutto Schermo" style={{fontSize:12, padding:'2px 8px'}}>
+          <button className="layer-pill" onClick={toggleFullscreen} title="A Tutto Schermo" style={{ fontSize: 12, padding: '2px 8px' }}>
             {isFullscreen ? '↙' : '⛶'}
           </button>
           <button className="layer-pill" onClick={takeScreenshot} title="Download Screenshot">
@@ -369,6 +477,7 @@ export default function App() {
               {tab === 'float' && <FloatTab D={D} year={year} />}
               {tab === 'tourism' && <TourismTab D={D} />}
               {tab === 'currents' && <CurrentsTab D={D} year={year} />}
+              {tab === 'biological' && <BiologicalTab D={D} year={year} />}
             </>
           )}
         </div>
