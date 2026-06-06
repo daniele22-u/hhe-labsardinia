@@ -1,0 +1,68 @@
+@import 'leaflet/dist/leaflet.css';
+
+:root {
+  --bg:       #060d1a;
+  --glass:    rgba(8, 18, 38, 0.72);
+  --glass2:   rgba(12, 24, 50, 0.85);
+  --border:   rgba(255,255,255,0.08);
+  --border2:  rgba(255,255,255,0.14);
+  --accent:   #3b9eff;
+  --accent2:  #f5a623;
+  --text:     #e8f4ff;
+  --muted:    #6b8cae;
+  --green:    #34d399;
+  --red:      #f87171;
+  --purple:   #a78bfa;
+}
+
+/* LIGHT MODE */
+[data-theme="light"] {
+  --bg:       #f0f4f8;
+  --glass:    rgba(255,255,255,0.75);
+  --glass2:   rgba(255,255,255,0.92);
+  --border:   rgba(0,0,0,0.07);
+  --border2:  rgba(0,0,0,0.12);
+  --accent:   #1a6fd4;
+  --accent2:  #c87800;
+  --text:     #0d1b2a;
+  --muted:    #5a748c;
+  --green:    #16a34a;
+  --red:      #dc2626;
+  --purple:   #7c3aed;
+}
+[data-theme="light"] html,
+[data-theme="light"] body,
+[data-theme="light"] #root { background: var(--bg); }
+[data-theme="light"] .leaflet-container { background: #d9e8f5 !important; filter: brightness(1.05) saturate(0.85); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; overflow: hidden; background: var(--bg); transition: background 0.3s; }
+body { font-family: 'Inter', system-ui, sans-serif; color: var(--text); transition: color 0.3s; }
+
+/* Leaflet */
+.leaflet-container { background: #030810 !important; }
+.leaflet-control-zoom a { background: var(--glass2) !important; color: var(--text) !important; border-color: var(--border2) !important; backdrop-filter: blur(8px); }
+.leaflet-control-zoom a:hover { background: rgba(59,158,255,.2) !important; }
+.leaflet-control-attribution { display: none !important; }
+
+/* Custom map cursor */
+.map-container { cursor: crosshair; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Tooltip dark */
+.leaflet-tooltip {
+  background: var(--glass2) !important;
+  border: 1px solid var(--border2) !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  border-radius: 6px !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0,0,0,.5) !important;
+}
+.leaflet-tooltip-left::before,
+.leaflet-tooltip-right::before { border-color: transparent !important; }

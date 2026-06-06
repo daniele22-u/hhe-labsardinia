@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HHE Lab Sardinia — Marine Litter HUD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #080f1c;
+    --panel: #0d1a2e;
+    --panel2: #111f35;
+    --border: #1e3a5f;
+    --accent: #1c7ab8;
+    --accent2: #f39c12;
+    --text: #cde4f5;
+    --muted: #5a7fa0;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --yellow: #f1c40f;
+    --purple: #8e44ad;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
+         display: flex; flex-direction: column; }
+
+  /* ── HEADER ── */
+  #header {
+    background: linear-gradient(90deg, var(--panel) 0%, #0a1628 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 16px;
+    display: flex; align-items: center; gap: 14px;
+    flex-shrink: 0; z-index: 1000;
+  }
+  #header h1 { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+  #header .sub { font-size: 9px; color: var(--muted); white-space: nowrap; }
+  .stat-chip {
+    background: var(--panel2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 12px; text-align: center; flex-shrink: 0;
+  }
+  .stat-chip .val { font-size: 17px; font-weight: 700; color: var(--accent2); }
+  .stat-chip .lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+  .chip-danger .val { color: var(--red); }
+  .chip-ok    .val { color: var(--green); }
+
+  /* ── MAIN ── */
+  #main { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+
+  /* ── MAP ── */
+  #map { width: 100%; height: 100%; }
+  #map-wrap { flex: 1; position: relative; min-height: 0; min-width: 0; overflow: hidden; }
+  .leaflet-container { background: #060e1a !important; }
+
+  /* ── LAYER TOGGLES (in panel) ── */
+  #layer-bar {
+    display: flex; gap: 4px; padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel2); flex-shrink: 0;
+  }
+  .layer-btn {
+    flex: 1; background: var(--panel); border: 1px solid var(--border);
+    color: var(--muted); padding: 4px 0; border-radius: 4px;
+    font-size: 10px; cursor: pointer; transition: all .2s; text-align: center;
+  }
+  .layer-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .layer-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ── RIGHT PANEL ── */
+  #panel {
+    width: 310px; flex-shrink: 0;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── YEAR SLIDER ── */
+  #year-section {
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #year-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  #year-display { font-size: 30px; font-weight: 700; color: var(--accent2); line-height: 1; }
+  #period-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px; letter-spacing: 1px;
+  }
+  input[type=range] { width: 100%; accent-color: var(--accent2); margin-top: 2px; }
+  .year-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+  /* ── TABS ── */
+  #tab-bar {
+    display: flex; flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel2);
+  }
+  .tab-btn {
+    flex: 1; padding: 7px 0; font-size: 11px; text-align: center;
+    color: var(--muted); cursor: pointer; border: none; background: none;
+    border-bottom: 2px solid transparent; transition: all .2s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+  /* ── TAB CONTENT ── */
+  #tab-content { flex: 1; overflow-y: auto; overflow-x: hidden; }
+  .tab-pane { display: none; padding: 14px; }
+  .tab-pane.active { display: block; }
+  .tab-pane h3 { font-size: 10px; letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+
+  .chart-wrap    { position: relative; height: 160px; }
+  .chart-wrap-sm { position: relative; height: 120px; }
+  .donut-wrap    { position: relative; height: 150px; }
+
+  /* Beach litter bars */
+  #beach-bars { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .beach-bar-row { display: flex; align-items: center; gap: 7px; }
+  .beach-bar-name { font-size: 10px; color: var(--muted); width: 64px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .beach-bar-outer { flex: 1; background: #0d1a2e; border-radius: 3px; height: 14px; position: relative; overflow: hidden; }
+  .beach-bar-inner { height: 100%; border-radius: 3px; transition: width .4s ease; }
+  .beach-bar-val { font-size: 10px; color: var(--text); width: 46px; text-align: right; flex-shrink: 0; }
+  .eu-line { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.35); pointer-events: none; }
+
+  /* Stats row */
+  .stats-row { display: flex; gap: 8px; }
+  .mini-stat { flex: 1; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 8px; text-align: center; }
+  .mini-stat .v { font-size: 18px; font-weight: 700; }
+  .mini-stat .l { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+
+  /* Current gauge */
+  #current-gauge-wrap { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  #current-speed-val { font-size: 36px; font-weight: 700; color: var(--accent); }
+  #current-speed-unit { font-size: 11px; color: var(--muted); }
+  #current-direction { font-size: 10px; color: var(--text); margin-top: 3px; }
+  #compass { width: 54px; height: 54px; flex-shrink: 0; }
+
+  /* Correlation */
+  .corr-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 3px; margin-bottom: 8px; }
+  .corr-cell { aspect-ratio: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+
+  /* Popup */
+  .custom-popup .leaflet-popup-content-wrapper {
+    background: var(--panel2);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    color: var(--text);
+    box-shadow: 0 4px 24px rgba(0,0,0,.6);
+  }
+  .custom-popup .leaflet-popup-tip { background: var(--accent); }
+  .popup-title { font-size: 13px; font-weight: 700; color: var(--accent2); margin-bottom: 8px; }
+  .popup-chart-wrap { width: 220px; height: 120px; position: relative; }
+
+  /* Float station tooltip */
+  .float-tip { background: var(--panel2); border: 1px solid var(--border); color: var(--text); font-size: 10px; padding: 4px 8px; border-radius: 4px; }
+
+  /* Scrollbar */
+  #tab-content::-webkit-scrollbar { width: 4px; }
+  #tab-content::-webkit-scrollbar-track { background: var(--panel); }
+  #tab-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div>
+    <div class="sub">HHE LAB SARDINIA · MSFD D10 · ISPRA 2018–2023</div>
+    <h1>🌊 MARINE LITTER HAZARD DASHBOARD</h1>
+  </div>
+  <div class="stat-chip chip-danger">
+    <div class="val" id="hdr-max-litter">—</div>
+    <div class="lbl">Max items/100m</div>
+  </div>
+  <div class="stat-chip">
+    <div class="val" id="hdr-float-obs" style="color:#9b59b6">—</div>
+    <div class="lbl">Floating obs</div>
+  </div>
+  <div class="stat-chip chip-ok">
+    <div class="val" id="hdr-current">—</div>
+    <div class="lbl">Current cm/s</div>
+  </div>
+  <div class="stat-chip">
+    <div class="val" id="hdr-plastic" style="color:#e74c3c">—</div>
+    <div class="lbl">% Plastic</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- MAP -->
+  <div id="map-wrap">
+    <div id="map"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="panel">
+
+    <!-- YEAR SLIDER -->
+    <div id="year-section">
+      <div id="year-top">
+        <div id="year-display">2018</div>
+        <div id="period-badge">pre-COVID</div>
+      </div>
+      <input type="range" min="2018" max="2023" step="1" value="2018" id="year-slider" oninput="setYear(+this.value)">
+      <div class="year-labels">
+        <span>2018</span><span>2019</span><span>2020</span><span>2021</span><span>2022</span><span>2023</span>
+      </div>
+    </div>
+
+    <!-- LAYER TOGGLES -->
+    <div id="layer-bar">
+      <button class="layer-btn active" id="btn-hazard" onclick="toggleLayer('hazard')">🟧 Hazard</button>
+      <button class="layer-btn active" id="btn-float"  onclick="toggleLayer('float')">🟣 Floating</button>
+      <button class="layer-btn active" id="btn-curr"   onclick="toggleLayer('curr')">🔵 Currents</button>
+    </div>
+
+    <!-- TAB BAR -->
+    <div id="tab-bar">
+      <button class="tab-btn active" onclick="showTab('beach')">🏖 Beach</button>
+      <button class="tab-btn"        onclick="showTab('float')">🌊 Float</button>
+      <button class="tab-btn"        onclick="showTab('tourism')">🧳 Tourism</button>
+      <button class="tab-btn"        onclick="showTab('currents')">🌀 Currents</button>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div id="tab-content">
+
+      <!-- BEACH TAB -->
+      <div id="tab-beach" class="tab-pane active">
+        <h3>Beach Litter — items/100m</h3>
+        <div id="beach-bars"></div>
+        <div class="stats-row">
+          <div class="mini-stat">
+            <div class="v" id="stat-surveys" style="color:var(--accent)">—</div>
+            <div class="l">Surveys</div>
+          </div>
+          <div class="mini-stat">
+            <div class="v" id="stat-above-eu" style="color:var(--red)">—</div>
+            <div class="l">Above EU 150</div>
+          </div>
+          <div class="mini-stat">
+            <div class="v" id="stat-mean" style="color:var(--accent2)">—</div>
+            <div class="l">Mean</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLOAT TAB -->
+      <div id="tab-float" class="tab-pane">
+        <h3>Floating Litter — Material Mix</h3>
+        <div class="donut-wrap"><canvas id="matChart"></canvas></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:10px">
+          Spearman corr vs current speed: <span style="color:#e74c3c;font-weight:700">r = −0.66</span>
+        </div>
+        <div style="margin-top:12px">
+          <h3>Correlation Matrix</h3>
+          <div class="corr-grid" id="corr-grid"></div>
+          <div style="font-size:9px;color:var(--muted);margin-top:6px">BL=Beach Litter · T=Tourism · CS=Current Speed · FL=Floating</div>
+        </div>
+      </div>
+
+      <!-- TOURISM TAB -->
+      <div id="tab-tourism" class="tab-pane">
+        <h3>Tourism vs Litter Trend</h3>
+        <div class="chart-wrap"><canvas id="tourismChart"></canvas></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:10px">
+          Sardinia regional presenze · Pearson r = <span style="color:#f39c12;font-weight:700">−0.44</span><br>
+          <span style="font-size:9px">Confounding: urban beaches get more cleaning services</span>
+        </div>
+      </div>
+
+      <!-- CURRENTS TAB -->
+      <div id="tab-currents" class="tab-pane">
+        <h3>Surface Currents (CMEMS)</h3>
+        <div id="current-gauge-wrap">
+          <canvas id="compass" width="54" height="54"></canvas>
+          <div>
+            <div style="display:flex;align-items:baseline;gap:4px">
+              <span id="current-speed-val">—</span>
+              <span id="current-speed-unit">cm/s</span>
+            </div>
+            <div id="current-direction">Direction: —</div>
+          </div>
+        </div>
+        <div class="chart-wrap-sm"><canvas id="currentChart"></canvas></div>
+      </div>
+
+    </div><!-- /tab-content -->
+  </div><!-- /panel -->
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const CORR = [
+  [1.00, -0.44,  0.12, -0.16],
+  [-0.44, 1.00, -0.00,  0.14],
+  [ 0.12,-0.00,  1.00, -0.66],
+  [-0.16, 0.14, -0.66,  1.00],
+];
+const CORR_LABELS = ['BL','T','CS','FL'];
+
+const PERIOD_MAP = {2018:'pre-COVID',2019:'pre-COVID',2020:'COVID',2021:'COVID',2022:'post-COVID',2023:'post-COVID'};
+const PERIOD_COLORS = {'pre-COVID':'#2980b9','COVID':'#e74c3c','post-COVID':'#27ae60'};
+const EU_THRESHOLD = 150;
+
+let D; // dashboard data
+let currentYear = 2018;
+let map, hazardLayer, floatLayer, arrowLayer;
+let matChart, tourismChart, currentChart;
+let popupCharts = {};
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+fetch('dashboard_data.json')
+  .then(r => r.json())
+  .then(data => { D = data; init(); });
+
+function showTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.textContent.toLowerCase().includes(name.slice(0,3))) b.classList.add('active');
+  });
+  // Resize charts after show (they may have rendered in hidden div)
+  if (matChart) matChart.resize();
+  if (tourismChart) tourismChart.resize();
+  if (currentChart) currentChart.resize();
+}
+
+function init() {
+  initMap();
+  initCharts();
+  buildCorr();
+  setYear(2018);
+  setTimeout(() => map.invalidateSize(), 200);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAP
+// ═══════════════════════════════════════════════════════════
+function initMap() {
+  map = L.map('map', {
+    center: [40.1, 9.0], zoom: 7,
+    zoomControl: true,
+    attributionControl: false
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 14, subdomains: 'abcd'
+  }).addTo(map);
+
+  // Beach station markers
+  D.beach_stations.forEach(st => {
+    const bid  = st.beach_id;
+    const col  = D.beach_colors[bid] || '#fff';
+    const name = D.beach_names[bid]  || st.name;
+
+    const marker = L.circleMarker([st.lat, st.lon], {
+      radius: 10, fillColor: col, color: '#fff',
+      weight: 2, fillOpacity: 0.9
+    }).addTo(map);
+
+    marker.on('click', () => openBeachPopup(st, col, name));
+    marker.bindTooltip(`<div style="background:#0d1a2e;border:1px solid ${col};color:#cde4f5;padding:4px 8px;border-radius:4px;font-size:11px"><b>${name}</b></div>`, {sticky: true, className: 'transparent-tooltip'});
+  });
+}
+
+// ── Hazard Grid ────────────────────────────────────────────
+function hcolor(v) {
+  if (v < 0.2) return '#27ae60';
+  if (v < 0.4) return '#f1c40f';
+  if (v < 0.6) return '#e67e22';
+  if (v < 0.8) return '#e74c3c';
+  return '#8e44ad';
+}
+function hclass(v) {
+  if (v < 0.2) return 'Very Low';
+  if (v < 0.4) return 'Low';
+  if (v < 0.6) return 'Medium';
+  if (v < 0.8) return 'High';
+  return 'Very High';
+}
+
+function buildHazardLayer(year) {
+  if (hazardLayer) hazardLayer.remove();
+  const cells = (D.hazard_by_year && D.hazard_by_year[year]) || [];
+  const rects = [];
+  const cell = 0.06;
+  cells.forEach(([lat, lon, h]) => {
+    const rect = L.rectangle(
+      [[lat - cell, lon - cell],[lat + cell, lon + cell]],
+      { color: null, fillColor: hcolor(h), fillOpacity: 0.45, weight: 0 }
+    );
+    rect.bindTooltip(`<b>${year}</b> — Hazard: ${h.toFixed(2)} (${hclass(h)})<br>Lat: ${lat} Lon: ${lon}`, {sticky:true});
+    rects.push(rect);
+  });
+  hazardLayer = L.layerGroup(rects);
+  if (layerState.hazard) hazardLayer.addTo(map);
+}
+
+// ── Floating stations ──────────────────────────────────────
+function buildFloatLayer() {
+  const markers = [];
+  D.float_stations.forEach(st => {
+    if (!st.lat || !st.lon) return;
+    const m = L.circleMarker([st.lat, st.lon], {
+      radius: 6, fillColor: '#9b59b6', color: '#fff',
+      weight: 1.5, fillOpacity: 0.8
+    });
+    m.bindTooltip(`<span style="color:#9b59b6">▲</span> ${st.station_id}<br>${st.n_obs} obs`, {sticky:true});
+    markers.push(m);
+  });
+  floatLayer = L.layerGroup(markers).addTo(map);
+}
+
+// ── Current arrows ─────────────────────────────────────────
+function buildArrowLayer(year) {
+  if (arrowLayer) arrowLayer.remove();
+  const arrows = D.annual_arrows[year] || [];
+  const layers = [];
+  const scale = 3.0;
+  arrows.forEach(([lat, lon, uo, vo, spd]) => {
+    if (spd < 0.02) return; // skip very weak
+    // Convert m/s to degrees (approx scale for Leaflet)
+    const dlat = vo * scale * 0.3;
+    const dlon = uo * scale * 0.45;
+    const line = L.polyline([[lat, lon],[lat+dlat, lon+dlon]], {
+      color: `rgba(28,122,184,${Math.min(0.9, spd*8)})`,
+      weight: 1.5, opacity: 0.7
+    });
+    layers.push(line);
+  });
+  arrowLayer = L.layerGroup(layers);
+  if (document.getElementById('btn-curr').classList.contains('active')) {
+    arrowLayer.addTo(map);
+  }
+}
+
+let layerState = {hazard: true, float: true, curr: true};
+function toggleLayer(name) {
+  layerState[name] = !layerState[name];
+  document.getElementById('btn-' + name).classList.toggle('active');
+  if (name === 'hazard') layerState.hazard ? hazardLayer.addTo(map) : hazardLayer.remove();
+  if (name === 'float')  layerState.float  ? floatLayer.addTo(map)  : floatLayer.remove();
+  if (name === 'curr')   layerState.curr   ? arrowLayer.addTo(map)  : arrowLayer.remove();
+}
+
+// ═══════════════════════════════════════════════════════════
+// BEACH POPUP
+// ═══════════════════════════════════════════════════════════
+function openBeachPopup(st, col, name) {
+  const bid = st.beach_id;
+  const years = [2018,2019,2020,2021,2022,2023];
+  const sl = D.sparklines[bid] || {};
+  const vals = years.map(y => sl[y] || null);
+  const tVals = years.map(y => { const r = (D.beach_tourism||[]).find(d=>d.beach_id===bid && +d.year===y); return r ? r.tourists/1000 : null; });
+
+  const popup = L.popup({className:'custom-popup', maxWidth: 280})
+    .setLatLng([st.lat, st.lon])
+    .setContent(`
+      <div style="padding:4px">
+        <div class="popup-title">${name}</div>
+        <div style="font-size:9px;color:#5a7fa0;margin-bottom:8px">Beach ID: ${bid}</div>
+        <div style="font-size:9px;color:#5a7fa0;margin-bottom:4px">items/100m per year</div>
+        <div class="popup-chart-wrap"><canvas id="popup-chart-${bid}"></canvas></div>
+        <div style="font-size:9px;color:#5a7fa0;margin-top:8px;margin-bottom:4px">Beach visitors (k/yr) — est.</div>
+        <div class="popup-chart-wrap"><canvas id="popup-tour-${bid}"></canvas></div>
+      </div>
+    `)
+    .openOn(map);
+
+  setTimeout(() => {
+    const c1 = document.getElementById(`popup-chart-${bid}`);
+    const c2 = document.getElementById(`popup-tour-${bid}`);
+    if (c1) new Chart(c1, {
+      type: 'bar',
+      data: { labels: years, datasets:[{
+        data: vals, backgroundColor: years.map(y=>PERIOD_COLORS[PERIOD_MAP[y]]+'bb'),
+        borderColor: col, borderWidth: 1
+      }]},
+      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+        annotation: {}},
+        scales:{
+          x:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'}},
+          y:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'},
+             title:{display:true,text:'items/100m',color:'#5a7fa0',font:{size:8}}}
+        }
+      }
+    });
+    if (c2) new Chart(c2, {
+      type: 'line',
+      data: { labels: years, datasets:[{
+        data: tVals, borderColor: '#f39c12', backgroundColor: 'rgba(243,156,18,.15)',
+        pointRadius: 3, fill: true, tension: 0.3
+      }]},
+      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{
+          x:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'}},
+          y:{ticks:{color:'#5a7fa0',font:{size:9}},grid:{color:'#1e3a5f'},
+             title:{display:true,text:'visitors (k)',color:'#5a7fa0',font:{size:8}}}
+        }
+      }
+    });
+  }, 80);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PANEL CHARTS
+// ═══════════════════════════════════════════════════════════
+function initCharts() {
+  buildHazardLayer(2018);
+  buildFloatLayer();
+
+  // Material donut
+  matChart = new Chart(document.getElementById('matChart'), {
+    type: 'doughnut',
+    data: { labels:[], datasets:[{ data:[], backgroundColor:['#e74c3c','#95a5a6','#27ae60','#8B4513','#f39c12','#3498db'], borderWidth:0 }]},
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{legend:{position:'right',labels:{color:'#cde4f5',font:{size:9},boxWidth:10,padding:6}}}
+    }
+  });
+
+  // Tourism chart (dual axis)
+  tourismChart = new Chart(document.getElementById('tourismChart'), {
+    type: 'line',
+    data: { labels: [2018,2019,2020,2021,2022,2023], datasets:[
+      { label:'Beach litter (mean)', data:[], borderColor:'#e74c3c', backgroundColor:'rgba(231,76,60,.1)',
+        fill:true, tension:.3, yAxisID:'y', pointRadius:4 },
+      { label:'Tourists (k)', data:[], borderColor:'#f39c12', backgroundColor:'rgba(243,156,18,.1)',
+        fill:false, tension:.3, yAxisID:'y2', pointRadius:4, borderDash:[4,3] },
+    ]},
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#cde4f5',font:{size:8},boxWidth:10}}},
+      scales:{
+        x:{ticks:{color:'#5a7fa0',font:{size:8}},grid:{color:'#1e3a5f33'}},
+        y:{ticks:{color:'#e74c3c',font:{size:8}},grid:{color:'#1e3a5f33'},title:{display:true,text:'items/100m',color:'#e74c3c',font:{size:8}}},
+        y2:{position:'right',ticks:{color:'#f39c12',font:{size:8}},grid:{drawOnChartArea:false},title:{display:true,text:'tourists M',color:'#f39c12',font:{size:8}}}
+      }
+    }
+  });
+
+  // Current chart
+  const curLabels = D.current_monthly.map(r=>`${r.year}-${String(r.month).padStart(2,'0')}`);
+  const curVals   = D.current_monthly.map(r=>+(r.mean_speed_ms*100).toFixed(2));
+  currentChart = new Chart(document.getElementById('currentChart'), {
+    type: 'line',
+    data: { labels: curLabels, datasets:[{
+      data: curVals, borderColor:'#1c7ab8', backgroundColor:'rgba(28,122,184,.15)',
+      fill:true, tension:.3, pointRadius:0, borderWidth:1.5
+    }]},
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#5a7fa0',font:{size:7},maxTicksLimit:8,maxRotation:0},grid:{color:'#1e3a5f33'}},
+        y:{ticks:{color:'#5a7fa0',font:{size:8}},grid:{color:'#1e3a5f33'},title:{display:true,text:'cm/s',color:'#5a7fa0',font:{size:8}}}
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// CORRELATION MATRIX
+// ═══════════════════════════════════════════════════════════
+function buildCorr() {
+  const grid = document.getElementById('corr-grid');
+  CORR_LABELS.forEach((rl, ri) => {
+    CORR_LABELS.forEach((cl, ci) => {
+      const v = CORR[ri][ci];
+      const cell = document.createElement('div');
+      cell.className = 'corr-cell';
+      const abs = Math.abs(v);
+      const r = ri===ci ? 255 : v>0 ? 0 : Math.round(200*abs);
+      const g = ri===ci ? 180 : v>0 ? Math.round(200*abs) : 0;
+      const b = ri===ci ? 0 : 0;
+      const bg = ri===ci ? '#1c7ab8' : v>0 ? `rgba(46,204,113,${abs*0.9})` : `rgba(231,76,60,${abs*0.9})`;
+      cell.style.background = bg;
+      cell.style.color = abs>0.4||ri===ci ? '#fff' : '#cde4f5';
+      cell.style.fontSize = '9px';
+      cell.textContent = ri===ci ? CORR_LABELS[ri] : v.toFixed(2);
+      cell.title = `${CORR_LABELS[ri]} vs ${CORR_LABELS[ci]}: ${v.toFixed(2)}`;
+      grid.appendChild(cell);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// SET YEAR (main update function)
+// ═══════════════════════════════════════════════════════════
+function setYear(yr) {
+  currentYear = yr;
+  document.getElementById('year-display').textContent = yr;
+  const period = PERIOD_MAP[yr];
+  const pb = document.getElementById('period-badge');
+  pb.textContent = period;
+  pb.style.background = PERIOD_COLORS[period] + '33';
+  pb.style.color = PERIOD_COLORS[period];
+  pb.style.border = `1px solid ${PERIOD_COLORS[period]}55`;
+
+  updateBeachBars(yr);
+  updateMaterialDonut(yr);
+  updateTourismChart();
+  updateCurrentGauge(yr);
+  updateHeaderStats(yr);
+  buildArrowLayer(yr);
+  buildHazardLayer(yr);
+  highlightCurrentYear(yr);
+}
+
+function updateBeachBars(yr) {
+  const container = document.getElementById('beach-bars');
+  container.innerHTML = '';
+  const bids = Object.keys(D.beach_names);
+  const maxVal = 4000;
+
+  const vals = bids.map(bid => {
+    const r = D.beach_annual.find(d => d.beach_id===bid && +d.year===yr);
+    return r ? r.items_per_100m : null;
+  });
+  const defined = vals.filter(v=>v!==null);
+  const mean = defined.length ? defined.reduce((a,b)=>a+b,0)/defined.length : 0;
+  const aboveEU = defined.filter(v=>v>EU_THRESHOLD).length;
+  document.getElementById('stat-surveys').textContent = defined.length * 2 + ' est';
+  document.getElementById('stat-above-eu').textContent = `${aboveEU}/6`;
+  document.getElementById('stat-mean').textContent = mean > 0 ? mean.toFixed(0) : '—';
+
+  bids.forEach((bid, i) => {
+    const v = vals[i];
+    const col = D.beach_colors[bid];
+    const name = D.beach_names[bid].split(' ')[0];
+    const pct = v !== null ? Math.min(100, v / maxVal * 100) : 0;
+    const euPct = EU_THRESHOLD / maxVal * 100;
+
+    const row = document.createElement('div');
+    row.className = 'beach-bar-row';
+    row.innerHTML = `
+      <span class="beach-bar-name" title="${D.beach_names[bid]}">${name}</span>
+      <div class="beach-bar-outer">
+        <div class="beach-bar-inner" style="width:${pct}%;background:${col}88;border-left:2px solid ${col}"></div>
+        <div class="eu-line" style="left:${euPct}%"></div>
+      </div>
+      <span class="beach-bar-val" style="color:${v>EU_THRESHOLD?'#e74c3c':'#5a7fa0'}">${v!==null?v.toFixed(0):'N/A'}</span>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function updateMaterialDonut(yr) {
+  const mats = D.mat_by_year[yr] || {};
+  const sorted = Object.entries(mats).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  matChart.data.labels   = sorted.map(([k])=>k);
+  matChart.data.datasets[0].data = sorted.map(([,v])=>v);
+  matChart.update('none');
+}
+
+function updateTourismChart() {
+  // All-beach mean items/100m per year
+  const years = [2018,2019,2020,2021,2022,2023];
+  const litter = years.map(y => {
+    const vals = D.beach_annual.filter(d=>+d.year===y).map(d=>d.items_per_100m);
+    return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+  });
+  // Regional Sardinia tourists (M)
+  const tourists = years.map(y => {
+    const r = D.tourism_annual.find(d=>+d.year===y);
+    return r ? r.tourists/1e6 : null;
+  });
+  tourismChart.data.datasets[0].data = litter;
+  tourismChart.data.datasets[1].data = tourists;
+  tourismChart.update('none');
+}
+
+function updateCurrentGauge(yr) {
+  const rows = D.current_monthly.filter(r=>+r.year===yr);
+  if (!rows.length) return;
+  const avgSpd  = rows.reduce((a,b)=>a+b.mean_speed_ms,0)/rows.length;
+  const avgUo   = rows.reduce((a,b)=>a+b.mean_uo,0)/rows.length;
+  const avgVo   = rows.reduce((a,b)=>a+b.mean_vo,0)/rows.length;
+  const deg     = (Math.atan2(avgUo, avgVo) * 180/Math.PI + 360) % 360;
+  const cmS     = (avgSpd*100).toFixed(1);
+  const dirName = ['N','NE','E','SE','S','SW','W','NW'][Math.round(deg/45)%8];
+
+  document.getElementById('current-speed-val').textContent = cmS;
+  document.getElementById('current-direction').textContent = `Direction: ${deg.toFixed(0)}° ${dirName}`;
+  document.getElementById('hdr-current').textContent = cmS + ' cm/s';
+
+  // Draw compass
+  const cv = document.getElementById('compass');
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,48,48);
+  ctx.strokeStyle = '#1e3a5f'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(24,24,20,0,2*Math.PI); ctx.stroke();
+  const rad = deg * Math.PI/180;
+  ctx.strokeStyle = '#1c7ab8'; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(24,24);
+  ctx.lineTo(24 + 16*Math.sin(rad), 24 - 16*Math.cos(rad));
+  ctx.stroke();
+  ctx.fillStyle = '#1c7ab8';
+  ctx.beginPath(); ctx.arc(24 + 16*Math.sin(rad), 24 - 16*Math.cos(rad), 3, 0, 2*Math.PI); ctx.fill();
+  ctx.fillStyle = '#5a7fa0'; ctx.font = '7px sans-serif'; ctx.textAlign='center';
+  ctx.fillText('N',24,8); ctx.fillText('S',24,44); ctx.fillText('E',42,26); ctx.fillText('W',6,26);
+}
+
+function updateHeaderStats(yr) {
+  const rows = D.beach_annual.filter(d=>+d.year===yr);
+  const maxL = rows.length ? Math.max(...rows.map(d=>d.items_per_100m)).toFixed(0) : '—';
+  document.getElementById('hdr-max-litter').textContent = maxL;
+
+  const fRows = D.float_monthly.filter(r=>+r.year===yr);
+  const fObs  = fRows.reduce((a,b)=>a+b.n_obs,0);
+  document.getElementById('hdr-float-obs').textContent = fObs;
+
+  // Plastic % from mat_by_year
+  const mats = D.mat_by_year && D.mat_by_year[String(yr)];
+  if (mats) {
+    const total = Object.values(mats).reduce((a,b)=>a+b,0);
+    const plastic = mats['Artificial polymer'] || 0;
+    const pct = total > 0 ? (plastic/total*100).toFixed(0)+'%' : '—';
+    document.getElementById('hdr-plastic').textContent = pct;
+  } else {
+    document.getElementById('hdr-plastic').textContent = '—';
+  }
+}
+
+function highlightCurrentYear(yr) {
+  // highlight current year on current chart with annotation band
+  const idx = D.current_monthly.findIndex(r=>+r.year===yr);
+  if (idx >= 0) {
+    currentChart.options.plugins.annotation = {};
+    currentChart.update('none');
+  }
+}
+
+// Style override for transparent tooltip
+const style = document.createElement('style');
+style.textContent = `.transparent-tooltip .leaflet-tooltip { background:transparent; border:none; box-shadow:none; }`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>

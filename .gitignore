@@ -1,0 +1,11 @@
+Labenv/
+.antigravity/
+node_modules/
+.vscode/
+~*
+*.DS_Store
+*.pyc
+/data/
+dashboard-react/dist/
+*.pptx
+*.pdf
