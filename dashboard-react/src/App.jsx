@@ -18,9 +18,7 @@ const TABS = [
 ];
 
 const LAYERS = [
-  { key: 'hazard', label: '⬛ Hazard' },
   { key: 'curr', label: '〜 Currents' },
-  // seafloor layer removed: data not available for the full 2018-2023 period
   { key: 'comuni', label: '🗺 Segments' },
   { key: 'micro', label: '🔬 Micro' },
   { key: 'lisa', label: '🔴 LISA' },
@@ -76,7 +74,7 @@ export default function App() {
   const [D, setD] = useState(null);
   const [year, setYear] = useState(2018);
   const [tab, setTab] = useState('beach');
-  const [layers, setLayers] = useState({ hazard: true, curr: true, seafloor: false, comuni: false, micro: false, lisa: false }); // seafloor kept in state for MapView compat but no pill
+  const [layers, setLayers] = useState({ hazard: false, curr: false, seafloor: false, comuni: true, micro: false, lisa: false }); // seafloor kept in state for MapView compat but no pill
   const [isPlaying, setIsPlaying] = useState(false);
   const [splashFading, setSplashFading] = useState(false);
   const [appStarted, setAppStarted] = useState(false);
@@ -249,10 +247,10 @@ export default function App() {
     if (bw) { const bv = getRawBioScore(bw); lines.push(`🦎 Impatto biologico max nel <b>${bw}</b>: score ${(bv * 100).toFixed(1)}‱.`); }
     const mw = microBW.worst;
     if (mw) { const mv = getRawMicroMean(mw); lines.push(`🔬 Microplastiche più dense nel <b>${mw}</b>: media ${mv?.toFixed(3)}.`); }
-    const l18 = getRawMaxLitter(2018), l23 = getRawMaxLitter(2023);
-    if (l18 && l23) {
-      const delta = ((l23 - l18) / l18 * 100).toFixed(0);
-      lines.push(`📈 Litter 2018→2023: <b>${delta > 0 ? '+' : ''}${delta}%</b>.`);
+    const l20 = getRawMaxLitter(2020), l23 = getRawMaxLitter(2023);
+    if (l20 && l23) {
+      const delta = ((l23 - l20) / l20 * 100).toFixed(0);
+      lines.push(`📈 Litter 2020→2023: <b>${delta > 0 ? '+' : ''}${delta}%</b>.`);
     }
     return lines;
   })() : [];

@@ -33,7 +33,8 @@
 
 \title{\vspace{-1.4cm}\textbf{Marine Litter Hazard Assessment in the Sardinian Sea}\\[2pt]
 \large A multi-compartment spatial hazard index from ISPRA monitoring data (2018--2023)}
-\author{Daniele Uras \quad\textbar\quad Filippo Saccomano\\[2pt]
+\author{Daniele Uras \quad\textbar\quad Filippo Saccomano \quad\textbar\quad Tommaso Nesa\\[2pt]
+Tommaso Del Vecchio \quad\textbar\quad Viola Guizzoni\\[2pt]
 \normalsize Human Health and Environment --- Data Science Laboratory, Politecnico di Milano}
 \date{\normalsize \today}
 
@@ -71,36 +72,21 @@ methods auditable.
 
 % ═══════════════════════════════════════════════════════════════
 \section{Work organisation}
-The project was carried out by a two-person team. We worked on a shared GitHub repository
+The project was carried out by a five-person team. We worked on a shared GitHub repository
 (\texttt{daniele22-u/hhe-labsardinia}) using feature branches and frequent, descriptive commits, so
-that every analytical decision is traceable in the version history. Tasks were split by area of
-ownership but reviewed jointly; pair work was reserved for the decisions that shape the whole
-output (compartment weights, grid resolution, validation strategy). Asynchronous coordination was
-handled through the commit log and issue notes rather than scattered files, which kept a single,
-linear project narrative.
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{@{}p{2.6cm}p{5.2cm}p{5.2cm}@{}}
-\toprule
-\textbf{Area} & \textbf{Daniele Uras} & \textbf{Filippo Saccomano}\\
-\midrule
-Lead & Data engineering, ISPRA retrieval, dashboard & Spatial methods, statistics, EDA\\
-Tasks & Module download/filtering, schema harmonisation, React dashboard, repo maintenance &
-IDW interpolation, composite index, Moran/LISA/GI*, figures\\
-Shared & \multicolumn{2}{l}{Project design, weight choices, validation, report \& presentation}\\
-\bottomrule
-\end{tabular}
-\caption{Division of labour. Ownership is indicative; design choices were made jointly.}
-\end{table}
+that every analytical decision is traceable in the version history. All team members contributed
+across different parts of the project --- data engineering, spatial analysis, exploratory analysis,
+biological data processing, and communication. Daniele Uras and Filippo Saccomano led the
+development of the interactive dashboard and the React/Leaflet front-end. Design decisions that
+shape the whole output (compartment weights, grid resolution, validation strategy) were made
+jointly by the full team.
 
 \textbf{Workflow discipline.} A single canonical artefact, \texttt{data/dashboard\_data.json}, is
 produced by the pipeline and consumed by every downstream component (figures, dashboard, report).
 This ``one source of truth'' avoided drift between team members and made results reproducible: any
 member could regenerate the whole output from raw ISPRA files with one command sequence. The same
-contract removed a classic two-person failure mode --- divergent intermediate CSVs --- because the
-JSON schema is the only interface the two work-streams share. Adding a compartment therefore means
+contract removed a classic multi-person failure mode --- divergent intermediate CSVs --- because the
+JSON schema is the only interface the work-streams share. Adding a compartment therefore means
 appending one key to the JSON, not renegotiating the whole codebase.
 
 % ═══════════════════════════════════════════════════════════════
