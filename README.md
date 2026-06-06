@@ -4,6 +4,16 @@ MSFD Descriptor 10 analysis of marine litter hazard along the Sardinian coast, 2
 
 ---
 
+## Quickstart — Dashboard
+
+```bash
+cd dashboard-react
+npm install       # first time only
+npm run dev       # → http://localhost:5173
+```
+
+---
+
 ## Repo structure
 
 ```
@@ -17,26 +27,32 @@ hhe-labsardinia/
 ├── data/
 │   ├── processed/                   # cleaned CSVs + GeoJSONs
 │   ├── figures/                     # output plots (PNG)
-│   ├── dashboard_data.json          # aggregated dashboard data
-│   ├── sardinia_hazard_index.html   # interactive Folium hazard map
-│   └── top10_categorie_per_anno.xlsx
+│   └── dashboard_data.json          # aggregated data consumed by the dashboard
 ├── notebooks/
 │   └── 00_analysis.ipynb            # full pipeline: cleaning → EDA → hazard
-├── dashboard-react/                 # interactive web dashboard
-│   ├── src/                         # React source
-│   ├── dist/                        # production build (ready to deploy)
+├── dashboard-react/                 # React + Leaflet interactive dashboard
+│   ├── src/                         # source
+│   ├── dist/                        # production build
 │   └── package.json
 ├── report/
-│   ├── report.pdf                   # full LaTeX report
+│   ├── report.pdf
 │   └── report.tex
 └── _archive/                        # superseded scripts and assets
 ```
 
 ---
 
-## Quickstart
+## Rebuild dashboard
 
-### 1. Run the analysis notebook
+```bash
+cd dashboard-react
+npm run build     # production build → dist/
+npm run preview   # preview built version
+```
+
+---
+
+## Regenerate analysis
 
 ```bash
 cd notebooks
@@ -44,25 +60,7 @@ jupyter lab 00_analysis.ipynb
 ```
 
 Runs end-to-end: data cleaning → EDA → spatial hazard index → coastal comune refinement.
-Requires kernel with: `pandas`, `numpy`, `matplotlib`, `seaborn`, `geopandas`, `folium`, `scipy`, `shapely`, `geodatasets`, `xlrd`, `openpyxl`.
-
-### 2. Open the interactive map
-
-```
-data/sardinia_hazard_index.html
-```
-
-Open directly in browser — no server needed.
-
-### 3. Run the web dashboard
-
-```bash
-cd dashboard-react
-npm install       # first time only
-npm run dev       # dev server → http://localhost:5173
-npm run build     # production build → dist/
-npm run preview   # preview built version
-```
+Requires: `pandas`, `numpy`, `matplotlib`, `seaborn`, `geopandas`, `folium`, `scipy`, `shapely`, `geodatasets`, `xlrd`, `openpyxl`.
 
 ---
 
@@ -85,9 +83,8 @@ Category codes follow the EU MSFD Joint List (G-prefix = pre-2022, J-prefix = 20
 
 | File | Description |
 |------|-------------|
-| `data/sardinia_hazard_index.html` | Interactive choropleth: composite hazard index, 10km IDW grid |
+| `dashboard-react/` | Main interactive dashboard (React + Leaflet) |
 | `data/figures/comuni_hazard_map.png` | Per-coastal-comune hazard, 2018–2023 |
-| `data/figures/beach_top_categories_by_year.png` | Top 10 litter categories per year |
 | `data/figures/hazard_index_map.png` | Static 3-panel map (beach / floating / composite) |
-| `data/top10_categorie_per_anno.xlsx` | Top 10 litter categories per year (wide format) |
+| `data/top10_categorie_per_anno.xlsx` | Top 10 litter categories per year |
 | `report/report.pdf` | Full scientific report |
