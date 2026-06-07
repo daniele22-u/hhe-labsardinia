@@ -7,7 +7,19 @@ import FloatTab from './components/tabs/FloatTab';
 import TourismTab from './components/tabs/TourismTab';
 import CurrentsTab from './components/tabs/CurrentsTab';
 import BiologicalTab from './components/tabs/BiologicalTab';
+import MicroplasticsPanel from './components/MicroplasticsPanel';
+import TourOverlay from './components/TourOverlay';
+import { TOUR_STEPS } from './tourSteps';
 import { PERIOD_MAP, PERIOD_COLORS, YEARS } from './constants';
+import { useT } from './i18n';
+import { LangContext } from './LangContext';
+
+// Available optional compartments — add new entries here to extend the dashboard
+const COMPARTMENTS = [
+  { key: 'micro', label: '🔬 Microplastics', available: true },
+  { key: 'sediment', label: '🏖 Sediment', available: false },
+  { key: 'pollution', label: '⚗️ Chemical', available: false },
+];
 
 const TABS = [
   { id: 'beach', label: '🏖 Beach' },
@@ -20,7 +32,6 @@ const TABS = [
 const LAYERS = [
   { key: 'curr', label: '〜 Currents' },
   { key: 'comuni', label: '🗺 Segments' },
-  { key: 'micro', label: '🔬 Micro' },
   { key: 'lisa', label: '🔴 LISA' },
 ];
 
@@ -81,6 +92,21 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [lang, setLang] = useState('en');
+  const [compartments, setCompartments] = useState(new Set());
+  const [showAddMenu, setShowAddMenu] = useState(false);
+  const addMenuRef = useRef(null);
+  const [tourActive, setTourActive] = useState(false);
+  const [tourStep, setTourStep] = useState(0);
+
+  const toggleCompartment = (key) => {
+    setCompartments(prev => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
+  const t = useT(lang);
 
   // Apply theme class to root
   useEffect(() => {
@@ -129,6 +155,43 @@ export default function App() {
     document.addEventListener('fullscreenchange', handleFs);
     return () => document.removeEventListener('fullscreenchange', handleFs);
   }, []);
+
+  // Tour: apply step side-effects (year / tab / layer / compartment)
+  useEffect(() => {
+    if (!tourActive || !D) return;
+    const s = TOUR_STEPS[tourStep];
+    if (s.year      !== undefined) setYear(s.year);
+    if (s.tab       !== undefined) setTab(s.tab);
+    if (s.layer     !== undefined) setLayers(p => ({ ...p, ...s.layer }));
+    if (s.compartment !== undefined) setCompartments(p => { const n = new Set(p); n.add(s.compartment); return n; });
+  }, [tourStep, tourActive, D]);
+
+  // Tour: keyboard navigation
+  useEffect(() => {
+    if (!tourActive) return;
+    const handler = (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Enter') {
+        setTourStep(s => Math.min(s + 1, TOUR_STEPS.length - 1));
+      } else if (e.key === 'ArrowLeft') {
+        setTourStep(s => Math.max(s - 1, 0));
+      } else if (e.key === 'Escape') {
+        setTourActive(false);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [tourActive]);
+
+  useEffect(() => {
+    if (!showAddMenu) return;
+    const handler = (e) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(e.target)) {
+        setShowAddMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showAddMenu]);
 
   const toggleLayer = k => setLayers(p => ({ ...p, [k]: !p[k] }));
 
@@ -238,19 +301,19 @@ export default function App() {
   const insights = D ? (() => {
     const lines = [];
     const lworst = litterBW.worst, lbest = litterBW.best;
-    if (lworst) lines.push(`🔴 Picco litter nel <b>${lworst}</b>, minimo nel <b>${lbest}</b>.`);
+    if (lworst) lines.push(t.insightPeak(lworst, lbest));
     const pw = plastBW.worst;
-    if (pw) { const pv = getRawPlastic(pw); lines.push(`🧴 Plastica massima nel <b>${pw}</b>: ${pv?.toFixed(0)}%.`); }
+    if (pw) { const pv = getRawPlastic(pw); lines.push(t.insightPlastic(pw, pv)); }
     const cw = currBW.worst;
-    if (cw) { const cv = getRawCurr(cw); lines.push(`🌊 Correnti più intense nel <b>${cw}</b>: ${cv?.toFixed(1)} cm/s.`); }
+    if (cw) { const cv = getRawCurr(cw); lines.push(t.insightCurrents(cw, cv)); }
     const bw = bioBW.worst;
-    if (bw) { const bv = getRawBioScore(bw); lines.push(`🦎 Impatto biologico max nel <b>${bw}</b>: score ${(bv * 100).toFixed(1)}‱.`); }
+    if (bw) { const bv = getRawBioScore(bw); lines.push(t.insightBio(bw, bv)); }
     const mw = microBW.worst;
-    if (mw) { const mv = getRawMicroMean(mw); lines.push(`🔬 Microplastiche più dense nel <b>${mw}</b>: media ${mv?.toFixed(3)}.`); }
+    if (mw) { const mv = getRawMicroMean(mw); lines.push(t.insightMicro(mw, mv)); }
     const l20 = getRawMaxLitter(2020), l23 = getRawMaxLitter(2023);
     if (l20 && l23) {
       const delta = ((l23 - l20) / l20 * 100).toFixed(0);
-      lines.push(`📈 Litter 2020→2023: <b>${delta > 0 ? '+' : ''}${delta}%</b>.`);
+      lines.push(t.insightLitter(delta));
     }
     return lines;
   })() : [];
@@ -266,13 +329,14 @@ export default function App() {
   const periodColor = PERIOD_COLORS[period];
 
   return (
+    <LangContext.Provider value={lang}>
     <div className="app">
       {/* SPLASH */}
       {!appStarted && (
         <div className={`splash-screen${splashFading ? ' fading' : ''}`}>
           <div className="splash-logo">🌊</div>
           <div className="splash-title">HHE LAB SARDINIA</div>
-          <div className="splash-loader">Caricamento dati in corso...</div>
+          <div className="splash-loader">{t.loading}</div>
         </div>
       )}
 
@@ -280,23 +344,22 @@ export default function App() {
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h2>🌊 Sardinia HHE Lab</h2>
-            <p style={{ marginTop: 10, lineHeight: 1.5, color: 'var(--muted)' }}>
-              Questa dashboard analizza l'<b>Hazard da Marine Litter</b> sulle coste della Sardegna (2018–2023), in accordo con la <b>MSFD D10</b>.
-            </p>
+            <h2>{t.modalTitle}</h2>
+            <p style={{ marginTop: 10, lineHeight: 1.5, color: 'var(--muted)' }}
+               dangerouslySetInnerHTML={{ __html: t.modalDesc }} />
 
-            <div className="modal-section-title">📊 Componenti dello Scoring</div>
+            <div className="modal-section-title">{t.scoringTitle}</div>
             <div className="modal-scoring-grid">
               <div className="modal-score-row">
                 <span className="modal-score-label">🏖 Beach Litter</span>
                 <span className="modal-score-weight">35%</span>
               </div>
               <div className="modal-score-row">
-                <span className="modal-score-label">🧴 % Plastica</span>
+                <span className="modal-score-label">🧴 {t.pctPlastic}</span>
                 <span className="modal-score-weight">25%</span>
               </div>
               <div className="modal-score-row">
-                <span className="modal-score-label">🌀 Correnti</span>
+                <span className="modal-score-label">{t.currentsLabel}</span>
                 <span className="modal-score-weight">20%</span>
               </div>
               <div className="modal-score-row">
@@ -305,26 +368,23 @@ export default function App() {
               </div>
             </div>
 
-            <div className="modal-section-title" style={{ marginTop: 12 }}>🦎 Impatto Biologico</div>
-            <p style={{ marginTop: 6, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}>
-              Il <b>Bio Score</b> è un proxy di impatto biologico calcolato come:
-            </p>
-            <p style={{ marginTop: 4, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}>
-              <b>Score = (ENT + ING) / N_max</b> · combina eventi di <b>entanglement</b> (ingarbugliamento) e <b>ingestione</b> di plastica rilevati su tartarughe marine (<i>Caretta caretta</i>, ~99%) dai dati <b>CNR-IAS/Oristano</b> (2018–2023, 83+82 eventi).
-            </p>
-            <p style={{ marginTop: 4, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}>
-              Il picco è nel <b>2021</b>. Il layer <b>🔬 Micro</b> mostra la griglia IDW di microplastiche derivata da 7.913 campionamenti trawl (336 celle/anno).
-            </p>
+            <div className="modal-section-title" style={{ marginTop: 12 }}>{t.bioImpactTitle}</div>
+            <p style={{ marginTop: 6, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}
+               dangerouslySetInnerHTML={{ __html: t.bioScoreDesc }} />
+            <p style={{ marginTop: 4, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}
+               dangerouslySetInnerHTML={{ __html: t.bioScoreFormula }} />
+            <p style={{ marginTop: 4, lineHeight: 1.6, color: 'var(--muted)', fontSize: 11 }}
+               dangerouslySetInnerHTML={{ __html: t.bioScoreMicro }} />
 
             {insights.length > 0 && (
               <div className="insights-box" style={{ marginTop: 12 }}>
-                <div className="insights-title">📈 Auto-Insights</div>
+                <div className="insights-title">{t.autoInsights}</div>
                 {insights.map((s, i) => (
                   <p key={i} dangerouslySetInnerHTML={{ __html: s }} style={{ marginTop: 6, fontSize: 11, lineHeight: 1.5, color: 'var(--text)' }} />
                 ))}
               </div>
             )}
-            <button className="modal-close" onClick={() => setIsModalOpen(false)}>Chiudi</button>
+            <button className="modal-close" onClick={() => setIsModalOpen(false)}>{t.close}</button>
           </div>
         </div>
       )}
@@ -338,11 +398,45 @@ export default function App() {
         } : null} />
       </div>
 
+      {/* LISA LEGEND */}
+      {layers.lisa && D?.moran_global?.[String(year)] && (() => {
+        const m = D.moran_global[String(year)];
+        const isClust = m.interpretation === 'clustered';
+        return (
+          <div className="lisa-legend">
+            <div className="lisa-legend-title">Global Moran's I</div>
+            <div className="lisa-legend-row">
+              <span className="lisa-legend-key">I</span>
+              <span className="lisa-legend-val">{m.I}</span>
+            </div>
+            <div className="lisa-legend-row">
+              <span className="lisa-legend-key">z</span>
+              <span className="lisa-legend-val">{m.z}</span>
+            </div>
+            <div className="lisa-legend-row">
+              <span className="lisa-legend-key">p</span>
+              <span className="lisa-legend-val">{m.p}</span>
+            </div>
+            <div className="lisa-legend-badge" style={{ color: isClust ? '#d7191c' : '#2c7bb6', borderColor: isClust ? 'rgba(215,25,28,.4)' : 'rgba(44,123,182,.4)' }}>
+              {m.interpretation}
+            </div>
+            <div className="lisa-legend-clusters">
+              {[['HH','#d7191c','Hotspot'],['LL','#2c7bb6','Coldspot'],['HL','#fdae61','Hi outlier'],['LH','#abd9e9','Lo outlier']].map(([k,c,l]) => (
+                <div key={k} className="lisa-legend-cluster-row">
+                  <span style={{ background: c, width: 8, height: 8, borderRadius: 2, display:'inline-block', flexShrink:0 }}/>
+                  <span style={{ color:'var(--muted)', fontSize: 8 }}>{k} · {l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* HAZARD LEGEND */}
       <div className="hazard-legend">
-        <div className="leg-title">Hazard Level</div>
+        <div className="leg-title">{t.hazardLevel}</div>
         <div className="leg-grad"></div>
-        <div className="leg-labels"><span>Basso</span><span>Alto</span></div>
+        <div className="leg-labels"><span>{t.low}</span><span>{t.high}</span></div>
       </div>
 
       {/* TOP BAR */}
@@ -414,6 +508,33 @@ export default function App() {
         </div>
 
         <div className="topbar-right">
+          {/* Add compartment dropdown — first so it opens leftward, away from side panel */}
+          <div className="add-compartment-wrap" ref={addMenuRef}>
+            <button
+              className={`layer-pill add-pill${compartments.size > 0 ? ' on' : ''}`}
+              onClick={() => setShowAddMenu(v => !v)}
+              title="Add data compartment"
+            >
+              {compartments.size > 0 ? `+ ${compartments.size}` : '＋ Add'}
+            </button>
+            {showAddMenu && (
+              <div className="add-menu">
+                <div className="add-menu-title">Add Compartment</div>
+                {COMPARTMENTS.map(({ key, label, available }) => (
+                  <button
+                    key={key}
+                    className={`add-menu-item${compartments.has(key) ? ' active' : ''}${!available ? ' disabled' : ''}`}
+                    onClick={() => available && toggleCompartment(key)}
+                    disabled={!available}
+                  >
+                    <span className="add-menu-check">{compartments.has(key) ? '✓' : '○'}</span>
+                    {label}
+                    {!available && <span className="add-menu-soon">soon</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {/* Dark/Light toggle */}
           <button className={`layer-pill${isDark ? ' on' : ''}`} onClick={() => setIsDark(!isDark)} title="Tema">
             {isDark ? '☀️' : '🌙'}
@@ -423,11 +544,21 @@ export default function App() {
               {label}
             </button>
           ))}
-          <button className="layer-pill" onClick={toggleFullscreen} title="A Tutto Schermo" style={{ fontSize: 12, padding: '2px 8px' }}>
+          <button className={`layer-pill${lang === 'it' ? ' on' : ''}`} onClick={() => setLang(l => l === 'en' ? 'it' : 'en')} title="Language / Lingua" style={{ fontSize: 11, padding: '2px 8px', fontWeight: 700 }}>
+            {lang === 'en' ? '🇮🇹' : '🇬🇧'}
+          </button>
+          <button className="layer-pill" onClick={toggleFullscreen} title={t.fullscreen} style={{ fontSize: 12, padding: '2px 8px' }}>
             {isFullscreen ? '↙' : '⛶'}
           </button>
           <button className="layer-pill" onClick={takeScreenshot} title="Download Screenshot">
             📸
+          </button>
+          <button
+            className={`layer-pill tour-pill${tourActive ? ' on' : ''}`}
+            onClick={() => { setTourStep(0); setTourActive(v => !v); }}
+            title="Dashboard Tour"
+          >
+            {tourActive ? '⏹ Tour' : '▶ Tour'}
           </button>
         </div>
       </div>
@@ -451,6 +582,19 @@ export default function App() {
           <div className="year-ticks">{YEARS.map(y => <span key={y}>{y}</span>)}</div>
         </div>
       </div>
+
+      {/* ADDON PANELS (compartments) */}
+      {compartments.has('micro') && D && (
+        <div className="addon-panel">
+          <div className="addon-panel-header">
+            <span>🔬 Microplastics</span>
+            <button className="addon-panel-close" onClick={() => toggleCompartment('micro')}>×</button>
+          </div>
+          <div className="addon-panel-body">
+            <MicroplasticsPanel D={D} year={year} />
+          </div>
+        </div>
+      )}
 
       {/* RIGHT PANEL */}
       <div className="side-panel">
@@ -483,13 +627,24 @@ export default function App() {
         {/* AUTO-INSIGHTS BOTTOM OF PANEL */}
         {D && insights.length > 0 && (
           <div className="insights-panel">
-            <div className="insights-title">📊 Insights</div>
+            <div className="insights-title">{t.insightsTitle}</div>
             {insights.map((s, i) => (
               <p key={i} dangerouslySetInnerHTML={{ __html: s }} />
             ))}
           </div>
         )}
       </div>
+      {/* TOUR OVERLAY */}
+      {tourActive && D && (
+        <TourOverlay
+          steps={TOUR_STEPS}
+          step={tourStep}
+          onNext={() => setTourStep(s => Math.min(s + 1, TOUR_STEPS.length - 1))}
+          onPrev={() => setTourStep(s => Math.max(s - 1, 0))}
+          onExit={() => setTourActive(false)}
+        />
+      )}
     </div>
+    </LangContext.Provider>
   );
 }

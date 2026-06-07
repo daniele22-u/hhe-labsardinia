@@ -1,6 +1,9 @@
 import { EU_THRESHOLD } from '../../constants';
+import { useLang } from '../../LangContext';
+import { useT } from '../../i18n';
 
 export default function BeachTab({ D, year }) {
+  const t = useT(useLang());
   if (!D) return <div className="tab-pane" style={{color:'var(--muted)',fontSize:12}}>Loading…</div>;
   const bids = Object.keys(D.beach_names);
   const maxVal = 4000;
@@ -14,7 +17,7 @@ export default function BeachTab({ D, year }) {
 
   return (
     <div className="tab-pane">
-      <div className="section-title">Beach Litter — items/100m</div>
+      <div className="section-title">{t.beachTitle(year)}</div>
       <div className="beach-bars">
         {rows.map(({ bid, val, color }) => {
           const pct = val !== null ? Math.min(100, val / maxVal * 100) : 0;
@@ -37,9 +40,9 @@ export default function BeachTab({ D, year }) {
         })}
       </div>
       <div className="stat-cards">
-        <div className="stat-card"><div className="sv" style={{color:'var(--accent)'}}>{defined.length*2}</div><div className="sl">Surveys est.</div></div>
-        <div className="stat-card"><div className="sv" style={{color:'var(--red)'}}>{aboveEU}/6</div><div className="sl">Above EU 150</div></div>
-        <div className="stat-card"><div className="sv" style={{color:'var(--accent2)'}}>{mean}</div><div className="sl">Mean i/100m</div></div>
+        <div className="stat-card"><div className="sv" style={{color:'var(--accent)'}}>{defined.length*2}</div><div className="sl">{t.surveysEst}</div></div>
+        <div className="stat-card"><div className="sv" style={{color:'var(--red)'}}>{aboveEU}/6</div><div className="sl">{t.aboveEU}</div></div>
+        <div className="stat-card"><div className="sv" style={{color:'var(--accent2)'}}>{mean}</div><div className="sl">{t.meanI100m}</div></div>
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { useLang } from '../../LangContext';
+import { useT } from '../../i18n';
 
 function degToCompass(d) {
   return ['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8];
@@ -21,6 +23,7 @@ function Compass({ deg }) {
 }
 
 export default function CurrentsTab({ D, year }) {
+  const t = useT(useLang());
   if (!D) return null;
   const yr = D.current_monthly.filter(r => +r.year === year);
   const meanCms = yr.length ? (yr.reduce((a,b)=>a+b.mean_speed_ms,0)/yr.length*100).toFixed(1) : '—';
@@ -36,13 +39,13 @@ export default function CurrentsTab({ D, year }) {
 
   return (
     <div className="tab-pane">
-      <div className="section-title">Surface Currents (CMEMS)</div>
+      <div className="section-title">{t.currentsTitle}</div>
       <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:16}}>
         <Compass deg={dirDeg}/>
         <div>
           <div style={{fontSize:38,fontWeight:800,color:'var(--accent)',lineHeight:1,letterSpacing:'-.02em'}}>{meanCms}</div>
-          <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>cm/s · {year} mean</div>
-          <div style={{fontSize:11,color:'var(--text)',marginTop:4}}>{degToCompass(dirDeg)} direction</div>
+          <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>{t.currMeanLabel(year)}</div>
+          <div style={{fontSize:11,color:'var(--text)',marginTop:4}}>{t.currDirection(degToCompass(dirDeg))}</div>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={120}>
@@ -56,8 +59,8 @@ export default function CurrentsTab({ D, year }) {
         </LineChart>
       </ResponsiveContainer>
       <div className="note">
-        Spearman r = <strong>−0.66</strong> (floating vs current speed)<br/>
-        <span style={{fontSize:9}}>Faster currents disperse items from fixed transects</span>
+        {t.currNote1}<br/>
+        <span style={{fontSize:9}}>{t.currNote2}</span>
       </div>
     </div>
   );

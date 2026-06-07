@@ -289,35 +289,11 @@ export default function MapView({ D, year, layers, compositeFactors }) {
         `;
         return L.rectangle(
           [[lat - cell, lon - cell], [lat + cell, lon + cell]],
-          { color: col, fillColor: col, fillOpacity: 0.65, weight: 0.5 }
+          { color: col, fillColor: col, fillOpacity: 0.42, weight: 0.3 }
         ).bindTooltip(tooltip, { sticky: true });
       });
 
-    // Add Moran's I annotation as a fixed marker
-    const moranLabel = moran
-      ? L.marker([38.72, 8.3], {
-          icon: L.divIcon({
-            className: '',
-            html: `<div style="
-              background:#0a1628cc;border:1px solid #1C7293;border-radius:6px;
-              padding:5px 8px;font-family:Inter,sans-serif;font-size:10px;color:#e0e0e0;
-              white-space:nowrap;pointer-events:none;">
-              <b style="color:#1C7293;">Global Moran's I</b><br>
-              I = ${moran.I} &nbsp; z = ${moran.z}<br>
-              p = ${moran.p} &nbsp;
-              <span style="color:${moran.interpretation==='clustered'?'#d7191c':'#2c7bb6'}">
-                ${moran.interpretation}
-              </span>
-            </div>`,
-            iconAnchor: [0, 0],
-          }),
-        })
-      : null;
-
-    const elements = [...rects];
-    if (moranLabel) elements.push(moranLabel);
-
-    lisaRef.current = L.layerGroup(elements);
+    lisaRef.current = L.layerGroup(rects);
     if (layers.lisa) lisaRef.current.addTo(mapRef.current);
   }, [D, year, layers.lisa]);
 

@@ -1,5 +1,7 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CORR, CORR_LABELS } from '../../constants';
+import { useLang } from '../../LangContext';
+import { useT } from '../../i18n';
 
 const COLORS = ['#3b9eff','#a78bfa','#34d399','#f5a623','#f87171','#64748b'];
 
@@ -12,6 +14,7 @@ function corrStyle(v, isLabel) {
 }
 
 export default function FloatTab({ D, year }) {
+  const t = useT(useLang());
   if (!D) return null;
   const mats = D.mat_by_year?.[String(year)] || {};
   const total = Object.values(mats).reduce((a,b)=>a+b,0);
@@ -33,7 +36,7 @@ export default function FloatTab({ D, year }) {
 
   return (
     <div className="tab-pane">
-      <div className="section-title">Floating Litter — {year}</div>
+      <div className="section-title">{t.floatTitle(year)}</div>
       <ResponsiveContainer width="100%" height={145}>
         <PieChart>
           <Pie data={pieData} dataKey="value" cx="50%" cy="50%" outerRadius={52} innerRadius={28}>
@@ -43,13 +46,11 @@ export default function FloatTab({ D, year }) {
           <Legend iconSize={7} wrapperStyle={{fontSize:9,color:'var(--muted)', paddingTop:'10px'}}/>
         </PieChart>
       </ResponsiveContainer>
-      <div className="note">
-        <strong>{pctPlastic}%</strong> plastic of {total} obs · corr vs current speed: <strong>r = −0.66</strong>
-      </div>
+      <div className="note" dangerouslySetInnerHTML={{ __html: t.floatNote(pctPlastic, total) }} />
       <div className="corr-wrap">
-        <div className="section-title" style={{marginTop:14}}>Spearman Correlation</div>
+        <div className="section-title" style={{marginTop:14}}>{t.spearmanTitle}</div>
         <div className="corr-grid" style={{gridTemplateColumns:'repeat(5,1fr)'}}>{cells}</div>
-        <div style={{fontSize:8,color:'var(--muted)',marginTop:4}}>BL=Beach Litter · T=Tourism · CS=Current · FL=Floating</div>
+        <div style={{fontSize:8,color:'var(--muted)',marginTop:4}}>{t.corrLegend}</div>
       </div>
     </div>
   );
