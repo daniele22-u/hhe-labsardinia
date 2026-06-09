@@ -17,8 +17,6 @@ import { LangContext } from './LangContext';
 // Available optional compartments — add new entries here to extend the dashboard
 const COMPARTMENTS = [
   { key: 'micro', label: '🔬 Microplastics', available: true },
-  { key: 'sediment', label: '🏖 Sediment', available: false },
-  { key: 'pollution', label: '⚗️ Chemical', available: false },
 ];
 
 const TABS = [

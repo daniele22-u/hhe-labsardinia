@@ -108,7 +108,7 @@ export const TOUR_STEPS = [
   {
     target: '.add-compartment-wrap',
     title: '➕ Extensible Compartments',
-    body: 'Add optional data panels. Any dataset with spatial or temporal sampling can be plugged in. Currently: Microplastics IDW grid from 7,913 surface trawl samples (336 cells/year).',
+    body: 'Add optional data panels not included in the main tabs. Currently available: Microplastics IDW concentration grid from 7,913 ISPRA surface trawl samples (336 cells/year).',
     layer: { comuni: true, curr: false, lisa: false },
     compartment: 'micro',
   },

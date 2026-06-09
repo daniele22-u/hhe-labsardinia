@@ -16,17 +16,14 @@
 \usepackage{subcaption}
 \usepackage{enumitem}
 \usepackage{xcolor}
-\usepackage{titlesec}
-\usepackage[hidelinks]{hyperref}
+% titlesec and hyperref removed for BasicTeX compatibility
+% \usepackage{titlesec}
+% \usepackage[hidelinks]{hyperref}
 
 \graphicspath{{../data/figures/}}
 
 % Compact but readable spacing to respect the 4-page limit
 \setlist{nosep,leftmargin=1.3em,topsep=2pt}
-\titlespacing*{\section}{0pt}{6pt}{3pt}
-\titlespacing*{\subsection}{0pt}{4pt}{2pt}
-\titleformat{\section}{\normalfont\large\bfseries\color{black!85}}{\thesection.}{0.5em}{}
-\titleformat{\subsection}{\normalfont\normalsize\bfseries\color{black!70}}{\thesubsection}{0.5em}{}
 \setlength{\parskip}{2pt}
 \setlength{\parindent}{0pt}
 \captionsetup{font=small,labelfont=bf}
@@ -53,7 +50,7 @@ compartments} nor analysed spatially at sub-regional scale.
 
 \textbf{Research question.} \textit{How is marine-litter hazard distributed along the Sardinian
 coast, and what temporal and statistical patterns emerge from ISPRA data (2018--2023)?} Our answer
-is an open, reproducible pipeline that processes eight monitored data compartments and combines the
+is an open, reproducible pipeline that processes six monitored data compartments and combines the
 four most directly hazard-relevant of them into a single spatial \emph{hazard index}, whose
 structure is then tested with formal autocorrelation statistics. The remaining compartments are
 analysed as pressure context or standalone exploratory layers (Sec.~3). The
@@ -100,7 +97,7 @@ contrast (tourism vs.\ protected habitats), making it a meaningful policy case.
 
 \item \textbf{Many compartments, a deliberate subset in the index.} Beach litter alone is the
 standard proxy, but it ignores the physical transport and ecological harm that turn litter into
-\emph{hazard}. We therefore collected and analysed eight compartments, then made an explicit choice
+\emph{hazard}. We therefore collected and analysed six compartments, then made an explicit choice
 about which feed the headline index. \textbf{In the index:} beach and floating litter (the spatial
 litter signal), the plastic share of beach material, sea currents (transport), and biological
 impact. \textbf{Deliberately excluded from the index} --- each for a specific, defensible reason:
@@ -114,12 +111,9 @@ variable (Sec.~6, COVID experiment).
 at 2022 (no 2023 module). Including it would break the cross-year comparability that the global
 normalisation is built to guarantee; we keep it as a standalone exploratory layer and flag it as
 the prime candidate for future inclusion (Sec.~8).
-\item \textit{Seafloor litter} is, for Sardinia, a \emph{synthetic} placeholder (no ISPRA module
-released; Sec.~7). Injecting fabricated values into the headline number would be scientifically
-indefensible, so it is excluded on principle.
 \end{itemize}
-Excluding these is not an omission but a guard: adding driver-type, non-comparable or synthetic
-signals would weaken, not strengthen, the index. The dashboard still exposes all eight as
+Excluding these is not an omission but a guard: adding driver-type or temporally incomplete
+signals would weaken, not strengthen, the index. The dashboard still exposes all six as
 toggleable layers, so nothing is hidden --- only the \emph{scored} index is kept clean.
 
 \item \textbf{Composite hazard index (IPCC framing).} The selected compartments are min--max
@@ -129,7 +123,7 @@ litter~35\%, plastic share~25\%, currents~20\%, biological impact~20\%. Weights 
 documented default --- not a fitted black box --- so reviewers can challenge or adjust them live in
 the dashboard.
 
-\item \textbf{Spatial statistics (LEC12).} A visual hotspot is not evidence. We added Global
+\item \textbf{Spatial statistics.} A visual hotspot is not evidence. We added Global
 Moran's~I, Local Moran's~I (LISA) and Getis--Ord~GI* to \emph{test} whether clustering is real,
 \emph{locate} it, and \emph{grade} its intensity. These were implemented from scratch in NumPy to
 keep the environment lightweight and the maths inspectable.
@@ -157,13 +151,13 @@ rather than as an ad-hoc script collection. Table~\ref{tab:phases} makes that ma
 Data acquisition & ISPRA module retrieval, regional bounding-box filtering, provenance headers &
 \texttt{Labenv/}, script headers\\
 Cleaning \& harmonisation & Schema unification across years, fixed protocol, coordinate back-fill &
-\texttt{01\_data\_cleaning}, \texttt{clean\_all.py}\\
+\texttt{01\_data\_cleaning}\\
 Exploratory analysis & Trends, composition, seasonality, cross-compartment correlations &
 \texttt{02\_eda}, figures\\
 Modelling & IDW grid, composite index, coastal-segment aggregation, spatial statistics &
-\texttt{03\_spatial\_hazard}, \texttt{analysis\_04--10}\\
-Integration & Single canonical dataset assembled from all compartments &
-\texttt{update\_dashboard\_data.py} $\rightarrow$ JSON\\
+\texttt{03\_spatial\_hazard}\\
+Integration & Single canonical dataset assembled from all compartments, exported to JSON &
+\texttt{00\_analysis} $\rightarrow$ \texttt{dashboard\_data.json}\\
 Communication & Interactive dashboard, static figures, report, presentation &
 \texttt{dashboard-react/}, \texttt{build\_deck.js}\\
 \bottomrule
@@ -174,14 +168,14 @@ an owned, reproducible step rather than being skipped or merged.}
 \end{table}
 
 \textbf{Usability.} Reproducibility on a new machine was treated as a first-class requirement. The
-repository ships a README documenting environment setup and a fixed run order (notebooks
-\texttt{01}$\rightarrow$\texttt{03}, then scripts \texttt{04}$\rightarrow$\texttt{10}, then
-\texttt{update\_dashboard\_data.py}); all paths are relative to the repository root; and every
-script header records its data provenance (ISPRA module, bounding box, year range). The dashboard is
-a static build served from the generated JSON, so it needs no backend. A clean checkout therefore
-regenerates every figure and the full dashboard from the raw files with no manual editing --- the
-main usability risk that remains is obtaining the raw ISPRA modules, which require manual download
-from the national portal and are documented accordingly.
+repository ships a README documenting environment setup. The full analysis pipeline runs in a single
+self-contained notebook (\texttt{00\_analysis.ipynb}); modular variants are available as
+\texttt{01\_data\_cleaning}, \texttt{02\_eda}, and \texttt{03\_spatial\_hazard} for step-by-step
+inspection. All paths are relative to the repository root. The dashboard is a static build served
+from the generated JSON, so it needs no backend. A clean checkout therefore regenerates every figure
+and the full dashboard from the raw files with no manual editing --- the main usability risk that
+remains is obtaining the raw ISPRA modules, which require manual download from the national portal
+and are documented accordingly.
 
 % ═══════════════════════════════════════════════════════════════
 \section{Most relevant results (summary)}
@@ -221,9 +215,6 @@ biological signals.
 \begin{itemize}
 \item Only \textbf{6 beach stations}: sparse support, so IDW smooths aggressively and part of the
 very high autocorrelation is inherited from the interpolation, not purely from nature.
-\item The \textbf{seafloor compartment is synthetic} (no Sardinian ISPRA seafloor module was
-available); it uses real D8 station coordinates as placeholders and is excluded from the headline
-index.
 \item Scores are \textbf{relative} (min--max within the dataset), not absolute concentrations, so
 they compare internally but not against external thresholds.
 \item The COVID inference rests on a \textbf{single lockdown year} (low statistical power) and the
@@ -240,9 +231,7 @@ optimised against an external hazard ground truth (none exists at this scale).
 \section{Future developments}
 Three priorities follow directly from the choices above. \emph{(i)} Promote \textbf{microplastics}
 into the scored index once the 2022 coverage gap is closed and the 2023 module is released --- it is
-the only excluded compartment that is a genuine hazard state. \emph{(ii)} Replace the synthetic
-seafloor layer with real \textbf{MEDITS} trawl data, which would also let it enter the index
-honestly. \emph{(iii)} Move from description to explanation with \textbf{spatial regression}
+the only excluded compartment that is a genuine hazard state. \emph{(ii)} Move from description to explanation with \textbf{spatial regression}
 (SAR/SEM, and GWR/MGWR for location-varying drivers) and a \textbf{bi-variate Moran's~I} coupling
 beach and floating litter. We would also validate against independent \textbf{citizen-science} beach
 clean-ups and publish a per-\textit{comune} policy brief. The modular pipeline and single-JSON
