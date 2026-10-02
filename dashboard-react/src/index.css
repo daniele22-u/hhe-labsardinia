@@ -37,7 +37,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body, #root { height: 100%; overflow: hidden; background: var(--bg); transition: background 0.3s; }
-body { font-family: 'Inter', system-ui, sans-serif; color: var(--text); transition: color 0.3s; }
+body { font-family: 'Inter Variable', 'Inter', system-ui, sans-serif; color: var(--text); transition: color 0.3s; }
 
 /* Leaflet */
 .leaflet-container { background: #030810 !important; }
@@ -59,7 +59,7 @@ body { font-family: 'Inter', system-ui, sans-serif; color: var(--text); transiti
   background: var(--glass2) !important;
   border: 1px solid var(--border2) !important;
   color: var(--text) !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Inter Variable', 'Inter', sans-serif !important;
   font-size: 11px !important;
   border-radius: 6px !important;
   backdrop-filter: blur(8px);

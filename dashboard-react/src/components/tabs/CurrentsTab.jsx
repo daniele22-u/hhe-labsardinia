@@ -14,7 +14,7 @@ function Compass({ deg }) {
       <circle cx={cx} cy={cy} r={28} fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.1)" strokeWidth={1}/>
       {['N','E','S','W'].map((d,i) => {
         const a = i*90*Math.PI/180 - Math.PI/2;
-        return <text key={d} x={cx+19*Math.cos(a)} y={cy+19*Math.sin(a)} textAnchor="middle" dominantBaseline="middle" fontSize="8" fill="var(--muted)" fontFamily="Inter">{d}</text>;
+        return <text key={d} x={cx+19*Math.cos(a)} y={cy+19*Math.sin(a)} textAnchor="middle" dominantBaseline="middle" fontSize="8" fill="var(--muted)" fontFamily="Inter Variable, Inter, sans-serif">{d}</text>;
       })}
       <line x1={cx} y1={cy} x2={cx+rv*Math.cos(r2)} y2={cy+rv*Math.sin(r2)} stroke="var(--accent)" strokeWidth={2.5} strokeLinecap="round"/>
       <circle cx={cx} cy={cy} r={3} fill="var(--accent2)"/>
