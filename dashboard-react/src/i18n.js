@@ -26,7 +26,7 @@ export const TRANSLATIONS = {
     insightLitter:     (d)    => `📈 Litter 2020→2023: <b>${d>0?'+':''}${d}%</b>.`,
 
     // BeachTab
-    beachTitle:        (y) => `Beach Litter — items/100m`,
+    beachTitle:        () => `Beach Litter — items/100m`,
     surveysEst:        'Surveys est.',
     aboveEU:           'Above EU 150',
     meanI100m:         'Mean i/100m',
