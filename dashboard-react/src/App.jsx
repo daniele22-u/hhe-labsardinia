@@ -114,7 +114,7 @@ export default function App() {
   }, [isDark]);
 
   useEffect(() => {
-    fetch('/dashboard_data.json').then(r => r.json()).then(data => {
+    fetch(`${import.meta.env.BASE_URL}dashboard_data.json`).then(r => r.json()).then(data => {
       setD(data);
       setTimeout(() => {
         setSplashFading(true);

@@ -5,7 +5,6 @@ node_modules/
 ~*
 *.DS_Store
 *.pyc
-/data/
 dashboard-react/dist/
 *.pptx
 *.pdf
