@@ -33,7 +33,6 @@ export default function MapView({ D, year, layers, compositeFactors }) {
   const containerRef = useRef(null);
   const mapRef       = useRef(null);
   const hazardRef    = useRef(null);
-  const floatRef     = useRef(null);
   const arrowRef     = useRef(null);
   const beachRef     = useRef(null);
   const seafloorRef  = useRef(null);
@@ -273,7 +272,6 @@ export default function MapView({ D, year, layers, compositeFactors }) {
     if (!mapRef.current || !D) return;
     if (lisaRef.current) lisaRef.current.remove();
     const cells = D.lisa_by_year?.[String(year)] || [];
-    const moran = D.moran_global?.[String(year)];
     const cell  = 0.06;
 
     const rects = cells
