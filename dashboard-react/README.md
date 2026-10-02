@@ -1,16 +1,15 @@
-# React + Vite
+# Dashboard — Marine Litter Hazard, Sardinia
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interactive dashboard built with React 19, Vite, Leaflet and Recharts.
 
-Currently, two official plugins are available:
+**Live:** https://daniele22-u.github.io/hhe-labsardinia/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev       # development server → http://localhost:5173
+npm run build     # production build → dist/ (served under /hhe-labsardinia/)
+```
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+All data comes from `public/dashboard_data.json`, produced by the analysis pipeline in `../notebooks/`.
+The basemap uses Esri's free World Dark Gray tiles: no API key needed, attribution shown on the map.
+Deployment to GitHub Pages is automatic on push to `main` (see `../.github/workflows/deploy-dashboard.yml`).

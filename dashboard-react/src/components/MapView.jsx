@@ -40,10 +40,12 @@ export default function MapView({ D, year, layers, compositeFactors }) {
   // Init map once
   useEffect(() => {
     if (mapRef.current || !containerRef.current) return;
-    const map = L.map(containerRef.current, { center: [40.0, 9.1], zoom: 7, zoomControl: true });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '© CartoDB', subdomains: 'abcd', maxZoom: 19,
+    const map = L.map(containerRef.current, { center: [40.0, 9.1], zoom: 7, zoomControl: true, attributionControl: false });
+    // Esri dark basemap: free, no API key (CARTO basemaps now require one); attribution is mandatory
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors', maxZoom: 16,
     }).addTo(map);
+    L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
     mapRef.current = map;
     return () => { map.remove(); mapRef.current = null; };
   }, []);
