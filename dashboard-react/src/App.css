@@ -350,13 +350,13 @@ input[type=range] {
 /* ─────────────────────────────────────────
    RECHARTS OVERRIDES
 ───────────────────────────────────────── */
-.recharts-cartesian-axis-tick-value { fill: var(--muted) !important; font-size: 9px; font-family: 'Inter', sans-serif; }
+.recharts-cartesian-axis-tick-value { fill: var(--muted) !important; font-size: 9px; font-family: 'Inter Variable', 'Inter', sans-serif; }
 .recharts-default-tooltip {
   background: var(--glass2) !important;
   border: 1px solid var(--border2) !important;
   color: var(--text) !important;
   border-radius: 8px !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Inter Variable', 'Inter', sans-serif !important;
   font-size: 11px !important;
   backdrop-filter: blur(12px) !important;
 }

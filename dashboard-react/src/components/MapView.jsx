@@ -1,12 +1,16 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { hcolor, hclass } from '../constants';
+// marker icons bundled from the leaflet package (no requests to third-party CDNs)
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  iconUrl:       'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl:     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconRetinaUrl: markerIcon2x,
+  iconUrl:       markerIcon,
+  shadowUrl:     markerShadow,
 });
 
 function sfcolor(h) {
@@ -64,7 +68,7 @@ export default function MapView({ D, year, layers, compositeFactors }) {
         .map(d => `<div style="display:flex;justify-content:space-between;"><span>${d.year}:</span> <b>${d.items_per_100m}</b></div>`)
         .join('');
       const tooltipHTML = `
-        <div style="font-family:Inter,sans-serif;font-size:11px;min-width:100px;">
+        <div style="font-family:'Inter Variable',Inter,sans-serif;font-size:11px;min-width:100px;">
           <b style="color:${col};font-size:12px;display:block;border-bottom:1px solid var(--border2);padding-bottom:4px;margin-bottom:4px;">${name}</b>
           ${history || 'No data'}
         </div>
@@ -97,7 +101,7 @@ export default function MapView({ D, year, layers, compositeFactors }) {
       return L.rectangle([[lat - cell, lon - cell], [lat + cell, lon + cell]], {
         color: null, fillColor: hcolor(compScore), fillOpacity: 0.45, weight: 0,
       }).bindTooltip(`
-        <div style="font-family:Inter,sans-serif;font-size:11px;">
+        <div style="font-family:'Inter Variable',Inter,sans-serif;font-size:11px;">
           <b>${year}</b> · Composite Hazard: <b>${(compScore*100).toFixed(1)}%</b> (${hclass(compScore)})<br>
           <span style="color:var(--muted);font-size:9px;">Cell Litter Factor: ${h.toFixed(2)}</span>
         </div>
@@ -228,7 +232,7 @@ export default function MapView({ D, year, layers, compositeFactors }) {
         const compScore = (h * 0.35) + (fP * 0.25) + (fC * 0.20) + (fB * 0.20);
         color = hcolor(compScore);
         tooltipContent = `
-          <div style="font-family:Inter,sans-serif;font-size:11px;">
+          <div style="font-family:'Inter Variable',Inter,sans-serif;font-size:11px;">
             <b style="color:${color};font-size:12px;display:block;border-bottom:1px solid var(--border2);padding-bottom:4px;margin-bottom:4px;">${ft.properties.name}</b>
             <b>${year}</b> · Composite Hazard: <b>${(compScore*100).toFixed(1)}%</b> (${hclass(compScore)})<br>
             <span style="color:var(--muted);font-size:9px;">Segment Litter Factor: ${h.toFixed(2)}</span>
@@ -277,7 +281,7 @@ export default function MapView({ D, year, layers, compositeFactors }) {
       .map(([lat, lon, localI, cluster, giStar]) => {
         const col = LISA_COLORS[cluster] || 'transparent';
         const tooltip = `
-          <div style="font-family:Inter,sans-serif;font-size:11px;">
+          <div style="font-family:'Inter Variable',Inter,sans-serif;font-size:11px;">
             <b style="color:${col};font-size:12px;display:block;border-bottom:1px solid var(--border2);padding-bottom:4px;margin-bottom:4px;">${cluster} cluster</b>
             <b>${year}</b> · Local I: <b>${localI.toFixed(3)}</b><br>
             GI* z-score: <b>${giStar.toFixed(2)}</b><br>
